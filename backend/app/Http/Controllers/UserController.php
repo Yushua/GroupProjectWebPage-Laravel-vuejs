@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\ChangeUsernameRequest;
+use App\Http\Requests\CreateAccountRequest;
+use App\Http\Requests\LoginRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // Change username
-    public function changeUsername(Request $request, $id)
+    public function changeUsername(ChangeUsernameRequest $request, $id)
     {
         $user = User::find($id);
         if ($user) {
@@ -21,7 +23,6 @@ class UserController extends Controller
         return response()->json(['message' => 'User not found'], 404);
     }
 
-    // Get username by ID
     public function getUsernameById($id)
     {
         $user = User::find($id);
@@ -31,38 +32,39 @@ class UserController extends Controller
         return response()->json(['message' => 'User not found'], 404);
     }
 
-    // Get all usernames and IDs
     public function getAllUsernames()
     {
         $users = User::select('id', 'username')->get();
         return response()->json($users);
     }
 
-    // Create account
-    public function createAccount(Request $request)
+    public function createAccount(CreateAccountRequest $request)
     {
-        $request->validate([
-            'username' => 'required|unique:users',
-            'password' => 'required'
-        ]);
-
         $user = new User();
         $user->username = $request->username;
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return response()->json(['message' => 'Account created successfully']);
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json(['message' => 'Account created successfully', 'token' => $token]);
     }
 
-    // Login
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Login successful']);
+            $user = Auth::user();
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return response()->json(['message' => 'Login successful', 'token' => $token]);
         }
 
         return response()->json(['message' => 'Invalid credentials'], 401);
+    }
+
+    public function getUser(Request $request)
+    {
+        return response()->json($request->user());
     }
 }

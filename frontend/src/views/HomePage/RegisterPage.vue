@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from '@/axios'
 
 export default {
   name: 'RegisterPage',
@@ -25,14 +25,23 @@ export default {
   methods: {
     async register () {
       try {
-        const response = await axios.post('http://localhost:8000/create-account', {
+        const response = await axios.post('/create-account', {
           username: this.username,
           password: this.password
         })
-        this.message = response.data.message
+        const token = response.data.token
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        localStorage.setItem('auth_token', token)
+        this.message = 'Registration successful!'
       } catch (error) {
         this.message = error.response.data.message
       }
+    }
+  },
+  created () {
+    const token = localStorage.getItem('auth_token')
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     }
   }
 }
