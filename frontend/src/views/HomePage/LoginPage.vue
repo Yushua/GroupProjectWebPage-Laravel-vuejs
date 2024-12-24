@@ -30,9 +30,12 @@ export default {
           password: this.password
         })
         const token = response.data.token
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        axios.defaults.headers.common.Authorization = `Bearer ${token}`
         localStorage.setItem('auth_token', token)
         this.message = 'Login successful!'
+
+        // Redirect to DashboardPage
+        this.$router.push({ name: 'DashboardPage' })
       } catch (error) {
         this.message = error.response.data.message
       }

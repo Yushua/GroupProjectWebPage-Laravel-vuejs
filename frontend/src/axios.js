@@ -23,7 +23,7 @@ axios.interceptors.response.use(
   error => {
     if (error.response.status === 401) {
       localStorage.removeItem('auth_token')
-      delete axios.defaults.headers.common['Authorization']
+      delete axios.defaults.headers.common.Authorization
     }
     return Promise.reject(error)
   }
