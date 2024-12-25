@@ -12,17 +12,19 @@ class AuthControllerUnsecure extends Controller
     // Register new user
     public function registerUnsecure(Request $request)
     {
+        // Validate the incoming request
         $request->validate([
-            'name' => 'required|string|max:255',
-            'password' => 'required|string|min:8',
+            'username' => 'required|string|max:255|unique:user_profiles,username', // Ensure the username is unique
+            'password' => 'required|string|min:8', // Password validation
         ]);
 
         // Create a new user profile
         $userProfile = UserProfile::create([
-            'name' => $request->name,
-            'password' => Hash::make($request->password), // Hash the password
-            'LoginCode' => '', // Initially no login code
-            'user_list' => [], // Empty list
+            'username' => $request->username,                    // Username
+            'userId' => Str::uuid()->toString(),                  // Generate a unique userId
+            'password' => Hash::make($request->password),         // Hash the password
+            'LoginCode' => '',                                    // Initially no login code
+            'user_list' => [],                                    // Empty user list
         ]);
 
         return response()->json(['message' => 'User registered successfully'], 201);
@@ -31,14 +33,16 @@ class AuthControllerUnsecure extends Controller
     // Login with username and password
     public function loginUnsecure(Request $request)
     {
+        // Validate the incoming request
         $request->validate([
-            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255',
             'password' => 'required|string|min:8',
         ]);
 
-        // Find the user by name
-        $userProfile = UserProfile::where('name', $request->name)->first();
+        // Find the user by username
+        $userProfile = UserProfile::where('username', $request->username)->first();
 
+        // Check if the user exists and if the password is correct
         if (!$userProfile || !Hash::check($request->password, $userProfile->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }

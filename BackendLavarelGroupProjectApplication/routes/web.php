@@ -1,11 +1,18 @@
 <?php
 
+// routes/web.php
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/csrf-token', function () {
+    return response()->json(['csrf_token' => csrf_token()]);
+});
+
+// Your other routes
 use App\Http\Controllers\AuthControllerUnsecure;
 
 Route::post('/register-unsecure', [AuthControllerUnsecure::class, 'registerUnsecure']);
