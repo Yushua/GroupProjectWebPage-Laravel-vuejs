@@ -15,3 +15,7 @@ export default {
   name: 'HomePage'
 }
 </script>
+
+<style scoped>
+/* Add your styles here */
+</style>

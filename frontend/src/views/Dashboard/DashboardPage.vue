@@ -1,13 +1,20 @@
 <template>
     <div>
-        <!-- Your content here -->
-        <p>Dasboard Page</p>
+      <h1>Dashboard</h1>
+      <button @click="logout">Logout</button>
     </div>
-</template>
+  </template>
 
 <script>
 export default {
-  name: 'Dashboard'
+  name: 'DashboardPage',
+  methods: {
+    logout () {
+      localStorage.removeItem('auth_token')
+      delete this.$axios.defaults.headers.common.Authorization
+      this.$router.push({ name: 'HomePage' })
+    }
+  }
 }
 </script>
 

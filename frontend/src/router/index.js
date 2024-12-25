@@ -3,7 +3,6 @@ import HomePage from '../views/HomePage/HomePage.vue'
 import LoginPage from '../views/HomePage/LoginPage.vue'
 import RegisterPage from '../views/HomePage/RegisterPage.vue'
 import DashboardPage from '../views/Dashboard/DashboardPage.vue'
-import UserProfilePage from '@/views/Dashboard/UserProfilePage.vue'
 
 const routes = [
   {
@@ -25,11 +24,6 @@ const routes = [
     path: '/dashboard',
     name: 'DashboardPage',
     component: DashboardPage
-  },
-  {
-    path: '/UserProfile',
-    name: 'UserProfile',
-    component: UserProfilePage
   }
 ]
 
