@@ -42,26 +42,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Could not create token', 'details' => $e->getMessage()], 500);
         }
 
-        // Generate a JWT token with userId and expiration
-        $customToken = $this->generateJWTToken(auth()->user()->userId);
-
-        return response()->json([
-            'message' => 'Login successful',
-            'token' => $customToken
-        ]);
-    }
-
-    /**
-     * Generate a custom JWT token with userId and expiration.
-     */
-    private function generateJWTToken($userId)
-    {
-        $payload = [
-            'sub' => $userId, // Subject: userId
-            'exp' => now()->addHours(2)->timestamp, // Token expiration: 2 hours
-        ];
-
-        return \Firebase\JWT\JWT::encode($payload, env('JWT_SECRET'), 'HS256');
+        return response()->json(['message' => 'Login successful', 'token' => $token]);
     }
 
     // Get authenticated user
