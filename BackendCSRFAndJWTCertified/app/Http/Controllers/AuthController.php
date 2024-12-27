@@ -45,6 +45,25 @@ class AuthController extends Controller
         return response()->json(['message' => 'Login successful', 'token' => $token]);
     }
 
+    /**
+     * Check if the token is valid and return the userId.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function testToken(Request $request)
+    {
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+            return response()->json(['userId' => $user->userId]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Authorization Token is invalid or expired'], 401);
+        }
+    }
+
     // Get authenticated user
     public function me()
     {

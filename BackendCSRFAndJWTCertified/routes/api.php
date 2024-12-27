@@ -25,4 +25,6 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('/users', [UserProfileController::class, 'findAllUsers']);
     Route::post('/befriend', [UserProfileController::class, 'befriend']);
     Route::post('/unfollow', [UserProfileController::class, 'unfollow']);
+
+    Route::get('/test-token', [AuthController::class, 'testToken']);
 });
