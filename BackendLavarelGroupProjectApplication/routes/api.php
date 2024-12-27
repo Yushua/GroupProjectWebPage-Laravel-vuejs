@@ -15,6 +15,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('jwt.auth')->group(function () {
     Route::get('/all-users', [AuthController::class, 'allUsers']);
     Route::get('/profile', function (\Illuminate\Http\Request $request) {
-        return response()->json(['userId' => $request->userId]);
+        return response()->json(['userId' => $request->user()->userId]);
     });
 });

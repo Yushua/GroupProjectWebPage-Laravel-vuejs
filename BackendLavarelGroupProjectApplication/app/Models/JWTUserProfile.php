@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class JWTUserProfile extends Authenticatable
+class JWTUserProfile extends Authenticatable implements JWTSubject
 {
     use HasFactory;
 
@@ -27,4 +28,15 @@ class JWTUserProfile extends Authenticatable
     protected $casts = [
         'user_list' => 'array',
     ];
+
+    // JWTSubject methods
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return ['userId' => $this->userId];
+    }
 }
