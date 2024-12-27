@@ -1,14 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthControllerUnsecure;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserProfileController;
 
-Route::post('/register-unsecure', [AuthControllerUnsecure::class, 'registerUnsecure']);
-Route::post('/login-unsecure', [AuthControllerUnsecure::class, 'loginUnsecure']);
-Route::get('/check-unsecure', [AuthControllerUnsecure::class, 'checkUnsecure']);
-Route::get('/all-users-unsecure', [AuthControllerUnsecure::class, 'allUsersUnsecure']);
+// Unsecured routes
+Route::post('/register-unsecure', [AuthController::class, 'registerUnsecure']);
+Route::post('/login-unsecure', [AuthController::class, 'loginUnsecure']);
+Route::get('/check-unsecure', [AuthController::class, 'checkUnsecure']);
+Route::get('/all-users-unsecure', [AuthController::class, 'allUsersUnsecure']);
 
+// Secured routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -17,4 +19,10 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('/profile', function (\Illuminate\Http\Request $request) {
         return response()->json(['userId' => $request->user()->userId]);
     });
+
+    // UserProfileController routes
+    Route::get('/user/{userId?}', [UserProfileController::class, 'findByUserID']);
+    Route::get('/users', [UserProfileController::class, 'findAllUsers']);
+    Route::post('/befriend', [UserProfileController::class, 'befriend']);
+    Route::post('/unfollow', [UserProfileController::class, 'unfollow']);
 });
