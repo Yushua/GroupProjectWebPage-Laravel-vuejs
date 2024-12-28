@@ -39,4 +39,9 @@ class JWTUserProfile extends Authenticatable implements JWTSubject
     {
         return ['userId' => $this->userId];
     }
+
+    public function descriptionProfile()
+    {
+        return $this->hasOne(DescriptionProfile::class, 'userId', 'id');
+    }
 }

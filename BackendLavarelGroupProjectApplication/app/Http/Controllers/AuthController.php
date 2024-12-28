@@ -18,12 +18,20 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
+        // Create the JWTUserProfile
         $user = JWTUserProfile::create([
             'username' => $request->username,
             'userId' => (string) \Illuminate\Support\Str::uuid(),
             'password' => Hash::make($request->password),
             'LoginCode' => '',
-            'user_list' => [],
+            'user_list' => [], // Initialize as empty
+        ]);
+
+        // Create the associated DescriptionProfile
+        \App\Models\DescriptionProfile::create([
+            'userId' => $user->id,
+            'description' => null,
+            'roled' => null,
         ]);
 
         return response()->json(['message' => 'User registered successfully'], 201);
