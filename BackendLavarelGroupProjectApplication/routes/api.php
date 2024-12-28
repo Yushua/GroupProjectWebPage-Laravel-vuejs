@@ -6,6 +6,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\DescriptionProfileController;
 
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\MessageController;
+
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -27,4 +32,12 @@ Route::middleware('jwt.auth')->group(function () {
     Route::put('/updatedescription-profile', [DescriptionProfileController::class, 'updateDescription']);
     Route::get('/user-descriptionYWT', [DescriptionProfileController::class, 'getUserDescriptionJWT']);
     Route::get('/user-description/{userId?}', [DescriptionProfileController::class, 'getUserDescription']);
+
+    Route::post('/project', [ProjectController::class, 'createProject']); // Create project
+    Route::post('/project/{projectId}/role', [ProjectController::class, 'addRole']); // Add role to project
+    Route::post('/project/{projectId}/task', [ProjectController::class, 'addTask']); // Add task to project
+    Route::get('/project/{projectId}/users', [ProjectController::class, 'getProjectUsers']); // Get project users
+    Route::post('/project/{projectId}/invite', [ProjectController::class, 'addUserToProject']); // Add user to project using invite
+    Route::get('/project/{projectId}/invite-code', [ProjectController::class, 'getInviteCode']); // Get project invite code
+
 });
