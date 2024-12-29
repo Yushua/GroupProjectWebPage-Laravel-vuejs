@@ -2,44 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\JWTUserProfile;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\LoginUserRequest;
-
-use Illuminate\Http\Requests;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Models\JWTUserProfile;
+use App\Models\DescriptionProfile;
+use Hash;
+use JWTAuth;
 
 class AuthController extends Controller
 {
-    // Register a new user
+    // Register method
     public function register(RegisterUserRequest $request)
-{
-    // Data has already been validated by RegisterUserRequest
+    {
+        // The request is already validated by RegisterUserRequest
 
-    // Create the JWTUserProfile
-    $user = JWTUserProfile::create([
-        'username' => $request->username, // Use DTO properties
-        'userId' => (string) \Illuminate\Support\Str::uuid(),
-        'password' => Hash::make($request->password), // Hash the password
-        'LoginCode' => '',
-        'user_list' => [], // Initialize as empty array
-    ]);
+        // Create the JWTUserProfile
+        $user = JWTUserProfile::create([
+            'username' => $request->username, // Use validated request data
+            'userId' => (string) \Illuminate\Support\Str::uuid(),
+            'password' => Hash::make($request->password), // Hash the password
+            'LoginCode' => '',
+            'user_list' => [], // Initialize as empty array
+        ]);
 
-    // Create the associated DescriptionProfile
-    \App\Models\DescriptionProfile::create([
-        'userId' => $user->id,
-        'description' => null,
-        'roled' => null,
-    ]);
+        // Create the associated DescriptionProfile
+        DescriptionProfile::create([
+            'userId' => $user->id,
+            'description' => null,
+            'roled' => null,
+        ]);
 
-    return response()->json(['message' => 'User registered successfully'], 201);
-}
+        return response()->json(['message' => 'User registered successfully'], 201);
+    }
 
-    // Login with JWT Token
+    // Login method
     public function login(LoginUserRequest $request)
     {
+        // The request is already validated by LoginUserRequest
+
+        // Retrieve credentials
         $credentials = $request->only('username', 'password');
 
         try {
@@ -52,23 +53,5 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Login successful', 'token' => $token]);
     }
-
-    // Get authenticated user
-    public function me()
-    {
-        return response()->json(Auth::user());
-    }
-
-    // Logout
-    public function logout()
-    {
-        Auth::logout();
-        return response()->json(['message' => 'Successfully logged out']);
-    }
-
-    // Return all users
-    public function allUsers()
-    {
-        return response()->json(JWTUserProfile::all());
-    }
 }
+

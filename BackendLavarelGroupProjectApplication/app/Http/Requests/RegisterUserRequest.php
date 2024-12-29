@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
-class RegisterUserRequest
+use Illuminate\Foundation\Http\FormRequest;
+
+class RegisterUserRequest extends FormRequest // Extend FormRequest
 {
     public function authorize()
     {
@@ -13,7 +15,7 @@ class RegisterUserRequest
     {
         return [
             'username' => 'required|string|max:255|unique:user_profiles,username',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|confirmed', // Assuming you have a password_confirmation field
         ];
     }
 
@@ -22,6 +24,7 @@ class RegisterUserRequest
         return [
             'username.unique' => 'The username is already taken.',
             'password.min' => 'The password must be at least 8 characters long.',
+            'password.confirmed' => 'The password confirmation does not match.',
         ];
     }
 }
