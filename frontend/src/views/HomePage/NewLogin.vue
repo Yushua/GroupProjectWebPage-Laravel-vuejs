@@ -7,24 +7,43 @@
         <!-- Welcome text -->
         <div class="welcome-text">Welcome to my Project</div>
 
-        <!-- Please Login or Register Text -->
-        <div class="login-register-text">Please Login or Register</div>
+        <!-- Buttons for Login and Register -->
+        <div class="action-buttons">
+          <button class="login-btn" @click="setLogin">Login</button>
+          <button class="register-btn" @click="setRegister">Register</button>
+        </div>
 
-        <!-- Use LoginObject Component (Empty for now) -->
-        <LoginObject />
+        <!-- Conditionally render LoginObject or RegisterObject -->
+        <LoginObject v-if="isLoginActive" />
+        <RegisterObject v-if="!isLoginActive" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// Import the LoginObject component
+// Import the LoginObject and RegisterObject components
 import LoginObject from './LoginObject.vue'
+import RegisterObject from './RegisterObject.vue'
 
 export default {
   name: 'HomePage',
   components: {
-    LoginObject // Register LoginObject component
+    LoginObject,
+    RegisterObject
+  },
+  data () {
+    return {
+      isLoginActive: true // Tracks which component to display (Login or Register)
+    }
+  },
+  methods: {
+    setLogin () {
+      this.isLoginActive = true // Show LoginObject
+    },
+    setRegister () {
+      this.isLoginActive = false // Show RegisterObject
+    }
   }
 }
 </script>
@@ -41,9 +60,7 @@ export default {
 
 /* Login Window */
 .login-window {
-  position: absolute;
-  top: 80px;
-  left: 40px;
+  position: relative; /* Changed to relative positioning */
   width: 670px;
   height: 865px;
   background-color: #d9d9d9; /* Set fill color to D9D9D9 */
@@ -68,21 +85,39 @@ export default {
   text-align: center;
 }
 
-/* Please Login or Register Text (only horizontally centered) */
-.login-register-text {
+/* Action Buttons (Login & Register) */
+.action-buttons {
   position: absolute;
-  top: 245px; /* Keep the vertical position as is */
-  left: 50%; /* Start at 50% of the LoginWindow */
-  transform: translateX(-50%); /* Offset the element by 50% of its width to center it */
-  width: 413px;
-  height: 32px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 200; /* Extra-light */
-  font-size: 24px;
-  color: rgba(0, 0, 0, 0.6); /* Set opacity to 60% */
+  top: 245px; /* Position them below the welcome text */
+  left: 50%;
+  transform: translateX(-50%); /* Center horizontally */
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  gap: 20px; /* Space between the buttons */
+}
+
+.login-btn, .register-btn {
+  width: 140px;
+  height: 40px;
+  background-color: #78a4de; /* Blue */
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-weight: 500; /* Medium */
+  font-size: 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-btn:hover, .register-btn:hover {
+  background-color: #6c94c7; /* Darker blue on hover */
+}
+
+/* Positioning for LoginObject and RegisterObject */
+.login-object, .register-object {
+  position: absolute;
+  top: 320px; /* Set position below the "Please Login or Register" text */
+  left: 50%; /* Horizontally center the LoginObject/RegisterObject */
+  transform: translateX(-50%); /* Offset by 50% of its width */
 }
 </style>
