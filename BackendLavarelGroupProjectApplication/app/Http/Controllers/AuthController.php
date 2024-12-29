@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\JWTUserProfile;
-use Illuminate\Http\Request;
+use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\LoginUserRequest;
+
+use Illuminate\Http\Requests;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -11,39 +14,36 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class AuthController extends Controller
 {
     // Register a new user
-    public function register(Request $request)
-    {
-        $request->validate([
-            'password' => 'required|string|min:8',
-            'username' => 'required|string|max:255|unique:user_profiles,username',
-        ]);
+    public function register(RegisterUserRequest $request)
+{
+    // Data has already been validated by RegisterUserRequest
 
-        // Create the JWTUserProfile
-        $user = JWTUserProfile::create([
-            'username' => $request->username,
-            'userId' => (string) \Illuminate\Support\Str::uuid(),
-            'password' => Hash::make($request->password),
-            'LoginCode' => '',
-            'user_list' => [], // Initialize as empty
-        ]);
+    // Create the JWTUserProfile
+    $user = JWTUserProfile::create([
+        'username' => $request->username, // Use DTO properties
+        'userId' => (string) \Illuminate\Support\Str::uuid(),
+        'password' => Hash::make($request->password), // Hash the password
+        'LoginCode' => '',
+        'user_list' => [], // Initialize as empty array
+    ]);
 
-        // Create the associated DescriptionProfile
-        \App\Models\DescriptionProfile::create([
-            'userId' => $user->id,
-            'description' => null,
-            'roled' => null,
-        ]);
+    // Create the associated DescriptionProfile
+    \App\Models\DescriptionProfile::create([
+        'userId' => $user->id,
+        'description' => null,
+        'roled' => null,
+    ]);
 
-        return response()->json(['message' => 'User registered successfully'], 201);
-    }
+    return response()->json(['message' => 'User registered successfully'], 201);
+}
 
     // Login with JWT Token
-    public function login(Request $request)
+    public function login(LoginUserRequest $request)
     {
         $credentials = $request->only('username', 'password');
 
         try {
-            if (!$token = JWTAuth::attempt($credentials)) {  // Use JWTAuth to attempt login
+            if (!$token = JWTAuth::attempt($credentials)) { // Attempt login using JWTAuth
                 return response()->json(['error' => 'Invalid credentials'], 401);
             }
         } catch (\Exception $e) {

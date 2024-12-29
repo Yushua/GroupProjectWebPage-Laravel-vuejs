@@ -1,27 +1,22 @@
-// config/cors.php
-
 <?php
 return [
-    /*
-    |--------------------------------------------------------------------------
-    | Laravel CORS Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure your settings for cross-origin resource sharing.
-    |
-    */
+    'allowed_origins' => ['*'],
 
-    'paths' => ['api/*', '/register', '/login'],  // Define which paths to apply CORS
+    'paths' => ['api/*', 'sanctum/csrf-cookie'], // Allow CORS on API paths
 
-    'allowed_methods' => ['*'],  // Allow all HTTP methods
+    'allowed_methods' => ['*'], // Allow all HTTP methods
 
-    'allowed_origins' => ['*'],  // Allow all origins (you can change '*' to your specific frontend URL like 'http://localhost:8080')
+    'allowed_origins' => ['http://localhost:8080'], // Allow your frontend origin
+    // Use '*' for all origins, but it's less secure in production
 
-    'allowed_headers' => ['*'],  // Allow all headers
+    'allowed_origins_patterns' => [], // Optional
 
-    'exposed_headers' => [],  // Any headers you want to expose, leave empty if not needed
+    'allowed_headers' => ['*'], // Allow all headers
 
-    'max_age' => 0,  // Max time for the preflight request to be cached
+    'exposed_headers' => [], // Optional
 
-    'supports_credentials' => false,  // Set to true if you need cookies or credentials in your CORS requests
+    'max_age' => 0, // Optional
+
+    'supports_credentials' => false, // Set true if sending cookies
 ];
+
