@@ -7,6 +7,9 @@
     <div>
       <router-link to="/login">Login</router-link>
     </div>
+    <div>
+      <router-link to="/newLogin">NewLogin</router-link>
+    </div>
   </div>
 </template>
 
