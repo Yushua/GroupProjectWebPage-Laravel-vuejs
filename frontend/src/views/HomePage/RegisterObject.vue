@@ -1,30 +1,17 @@
 <template>
   <div class="register-object">
-    <!-- Username Section -->
     <div class="input-section">
       <label for="username" class="input-label">Username</label>
-      <input
-        type="text"
-        id="username"
-        v-model="username"
-        class="input-field"
-      />
+      <input type="text" id="username" v-model="username" class="input-field" />
       <div v-if="usernameError" class="error-message">Username Already in Use</div>
     </div>
 
-    <!-- Password Section -->
     <div class="input-section">
       <label for="password" class="input-label">Password</label>
-      <input
-        type="password"
-        id="password"
-        v-model="password"
-        class="input-field"
-      />
+      <input type="password" id="password" v-model="password" class="input-field" />
       <div v-if="passwordError" class="error-message">Password is required</div>
     </div>
 
-    <!-- Confirm Password Section -->
     <div class="input-section">
       <label for="confirmPassword" class="input-label">Confirm Password</label>
       <input
@@ -36,17 +23,15 @@
       <div v-if="passwordMismatch" class="error-message">Passwords do not match</div>
     </div>
 
-    <!-- Register Button -->
     <button class="register-btn" @click="register">Register</button>
 
-    <!-- Success/Error Message -->
     <div v-if="registerError" class="error-message">{{ registerError }}</div>
     <div v-if="registerSuccess" class="success-message">Registration Successful!</div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import api from '@/api'
 
 export default {
   name: 'RegisterObject',
@@ -58,132 +43,115 @@ export default {
       usernameError: false,
       passwordError: false,
       passwordMismatch: false,
-      registerError: '', // To hold error message
-      registerSuccess: false // To show success message on successful registration
+      registerError: '',
+      registerSuccess: false
     }
   },
   methods: {
     async register () {
-      // Reset errors before starting registration
       this.registerError = ''
       this.usernameError = false
       this.passwordError = false
       this.passwordMismatch = false
 
-      // Validate input fields
+      // Validate fields
       if (!this.username || !this.password || !this.confirmPassword) {
         this.registerError = 'All fields are required'
         return
       }
 
-      // Check if passwords match
+      // Check if password matches confirmPassword
       if (this.password !== this.confirmPassword) {
         this.passwordMismatch = true
         return
       }
 
-      // Simulate registration API call
       try {
-        const response = await axios.post('/register', {
-          username: this.username,
-          password: this.password
+        const response = await api.post('/register', {
+          username: this.username, // Correct order: username first
+          password: this.password // Then password
         })
 
-        if (response && response.data && response.data.success) {
+        // Success: Clear fields and show success message
+        if (response.data.message) {
           this.registerSuccess = true
-          this.clearFields()
+          this.username = ''
+          this.password = ''
+          this.confirmPassword = ''
         }
       } catch (error) {
-        // Handle different error responses
-        if (error.response) {
-          if (error.response.status === 400 && error.response.data.error === 'Username already exists') {
-            this.usernameError = true
-          } else {
-            this.registerError = 'Registration failed. Please try again.'
-          }
+        // Handle registration errors
+        if (error.response?.data?.error === 'Username already exists') {
+          this.usernameError = true
         } else {
-          this.registerError = 'An unexpected error occurred.'
+          this.registerError = 'Registration failed. Please try again.'
         }
       }
-    },
-
-    // Clears input fields after successful registration
-    clearFields () {
-      this.username = ''
-      this.password = ''
-      this.confirmPassword = ''
     }
   }
 }
 </script>
 
 <style scoped>
-/* RegisterObject style */
 .register-object {
-  width: 350px; /* Set width */
-  height: 400px; /* Adjusted height */
-  background-color: #fbe9e9; /* Placeholder background color */
-  border-radius: 8px; /* Optional rounded corners */
+  width: 350px;
+  height: 400px;
+  background-color: #fbe9e9;
+  border-radius: 8px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  justify-content: center; /* Vertically center all items inside */
-  align-items: center; /* Horizontally center all items inside */
+  justify-content: center;
+  align-items: center;
 }
 
-/* Input Section (Username/Password) */
 .input-section {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 100%; /* Allow the input fields to take full width */
+  width: 100%;
 }
 
-/* Label for the input fields */
 .input-label {
   font-family: "Inter", sans-serif;
-  font-weight: 300; /* Light */
+  font-weight: 300;
   font-size: 16px;
   color: #000;
 }
 
-/* Input field styling */
 .input-field {
   padding: 8px;
   font-family: "Inter", sans-serif;
   font-size: 16px;
-  background-color: #fbe9e9; /* Background color */
+  background-color: #fbe9e9;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-/* Error message styling */
 .error-message {
   font-family: "Inter", sans-serif;
-  font-weight: 300; /* Light */
+  font-weight: 300;
   font-size: 16px;
   color: red;
   margin-top: 4px;
 }
 
-/* Success message styling */
 .success-message {
   font-family: "Inter", sans-serif;
-  font-weight: 300; /* Light */
+  font-weight: 300;
   font-size: 16px;
   color: green;
   margin-top: 4px;
 }
 
-/* Register Button */
 .register-btn {
   width: 140px;
   height: 40px;
-  background-color: #78a4de; /* Blue */
+  background-color: #78a4de;
   color: white;
   font-family: "Inter", sans-serif;
-  font-weight: 500; /* Medium */
+  font-weight: 500;
   font-size: 20px;
   border: none;
   border-radius: 4px;
@@ -192,6 +160,6 @@ export default {
 }
 
 .register-btn:hover {
-  background-color: #6c94c7; /* Darker blue on hover */
+  background-color: #6c94c7;
 }
 </style>

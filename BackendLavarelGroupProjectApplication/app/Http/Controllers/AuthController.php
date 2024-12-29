@@ -14,8 +14,8 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'username' => 'required|string|max:255|unique:user_profiles,username',
             'password' => 'required|string|min:8',
+            'username' => 'required|string|max:255|unique:user_profiles,username',
         ]);
 
         // Create the JWTUserProfile

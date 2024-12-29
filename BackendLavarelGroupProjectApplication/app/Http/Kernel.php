@@ -22,6 +22,8 @@ class Kernel extends HttpKernel
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Http\Middleware\SetCacheHeaders::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        HandleCors::class,
+        \Fruitcake\Cors\HandleCors::class,
     ];
 
     /**

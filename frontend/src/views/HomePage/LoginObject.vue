@@ -1,39 +1,25 @@
 <template>
     <div class="login-object">
-      <!-- Username Section -->
       <div class="input-section">
         <label for="username" class="input-label">Username</label>
-        <input
-          type="text"
-          id="username"
-          v-model="username"
-          class="input-field"
-        />
+        <input type="text" id="username" v-model="username" class="input-field" />
         <div v-if="usernameError" class="error-message">Forgot your Username?</div>
       </div>
 
-      <!-- Password Section -->
       <div class="input-section">
         <label for="password" class="input-label">Password</label>
-        <input
-          type="password"
-          id="password"
-          v-model="password"
-          class="input-field"
-        />
+        <input type="password" id="password" v-model="password" class="input-field" />
         <div v-if="passwordError" class="error-message">Forgot your Password?</div>
       </div>
 
-      <!-- Login Button -->
       <button class="login-btn" @click="login">Login</button>
 
-      <!-- Error Message -->
       <div v-if="loginError" class="error-message">{{ loginError }}</div>
     </div>
-</template>
+  </template>
 
 <script>
-import axios from 'axios' // Assuming you're using axios
+import api from '@/api'
 
 export default {
   name: 'LoginObject',
@@ -43,35 +29,34 @@ export default {
       password: '',
       usernameError: false,
       passwordError: false,
-      loginError: '' // To hold error message
+      loginError: ''
     }
   },
   methods: {
     async login () {
+      if (!this.username || !this.password) {
+        this.loginError = 'Username and password are required'
+        return
+      }
+
       try {
-        // Simulate login process
-        const response = await axios.post('/login', {
+        const response = await api.post('/login', {
           username: this.username,
           password: this.password
         })
 
-        if (response && response.data && response.data.token) {
-          this.loginError = '' // Clear any previous errors
-          // Handle successful login (store token, redirect, etc.)
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token)
+          this.loginError = ''
+          // Redirect or perform other actions
         }
       } catch (error) {
-        // Handle different error responses
-        if (error.response) {
-          // If user does not exist
-          if (error.response.status === 404 && error.response.data.error === 'User not found') {
-            this.loginError = "User doesn't exist"
-          } else if (error.response.status === 401 && error.response.data.error === 'Invalid password') {
-            this.loginError = 'Password wrong'
-          } else {
-            this.loginError = 'Login failed. Please try again.'
-          }
+        if (error.response?.data?.error === 'User not found') {
+          this.loginError = "User doesn't exist"
+        } else if (error.response?.data?.error === 'Invalid password') {
+          this.loginError = 'Password wrong'
         } else {
-          this.loginError = 'An unexpected error occurred.'
+          this.loginError = 'Login failed. Please try again.'
         }
       }
     }
@@ -79,72 +64,66 @@ export default {
 }
 </script>
 
-<style scoped>
-/* LoginObject style without positioning */
-.login-object {
-  width: 350px; /* Set width */
-  height: 280px; /* Set height */
-  background-color: #fbe9e9; /* Placeholder background color */
-  border-radius: 8px; /* Optional rounded corners */
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  justify-content: center; /* Vertically center all items inside */
-  align-items: center; /* Horizontally center all items inside */
-}
+  <style scoped>
+  .login-object {
+    width: 350px;
+    height: 280px;
+    background-color: #fbe9e9;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+  }
 
-/* Input Section (Username/Password) */
-.input-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%; /* Allow the input fields to take full width */
-}
+  .input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
 
-/* Label for the input fields */
-.input-label {
-  font-family: "Inter", sans-serif;
-  font-weight: 300; /* Light */
-  font-size: 16px;
-  color: #000;
-}
+  .input-label {
+    font-family: "Inter", sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    color: #000;
+  }
 
-/* Input field styling */
-.input-field {
-  padding: 8px;
-  font-family: "Inter", sans-serif;
-  font-size: 16px;
-  background-color: #fbe9e9; /* Background color */
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+  .input-field {
+    padding: 8px;
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    background-color: #fbe9e9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
 
-/* Error message styling */
-.error-message {
-  font-family: "Inter", sans-serif;
-  font-weight: 300; /* Light */
-  font-size: 16px;
-  color: red;
-  margin-top: 4px;
-}
+  .error-message {
+    font-family: "Inter", sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    color: red;
+    margin-top: 4px;
+  }
 
-/* Login Button */
-.login-btn {
-  width: 140px;
-  height: 40px;
-  background-color: #78a4de; /* Blue */
-  color: white;
-  font-family: "Inter", sans-serif;
-  font-weight: 500; /* Medium */
-  font-size: 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+  .login-btn {
+    width: 140px;
+    height: 40px;
+    background-color: #78a4de;
+    color: white;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
 
-.login-btn:hover {
-  background-color: #6c94c7; /* Darker blue on hover */
-}
-</style>
+  .login-btn:hover {
+    background-color: #6c94c7;
+  }
+  </style>
