@@ -2,13 +2,25 @@
 
 namespace App\Http\Requests;
 
-class RegisterUserRequest
+use Illuminate\Foundation\Http\FormRequest;
+
+class RegisterUserRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
     public function authorize()
     {
         return true; // Allow all requests; adjust if authorization logic is needed
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
     public function rules()
     {
         return [
@@ -17,6 +29,11 @@ class RegisterUserRequest
         ];
     }
 
+    /**
+     * Get the custom messages for validator errors.
+     *
+     * @return array
+     */
     public function messages()
     {
         return [

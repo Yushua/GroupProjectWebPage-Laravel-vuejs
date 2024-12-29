@@ -46,9 +46,11 @@ export default {
         })
 
         if (response.data.token) {
+        // Store token in localStorage
           localStorage.setItem('token', response.data.token)
           this.loginError = ''
-          // Redirect or perform other actions
+          // Redirect to Dashboard or home page after successful login
+          this.$router.push('/dashboard')
         }
       } catch (error) {
         if (error.response?.data?.error === 'User not found') {
