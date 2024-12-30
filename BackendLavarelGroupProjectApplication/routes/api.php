@@ -21,6 +21,7 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // Protected routes (JWT authentication required)
 Route::middleware('jwt.auth')->group(function () {
+
     Route::get('/all-users', [AuthController::class, 'allUsers']);
     Route::get('/profile', function (Request $request) {
         return response()->json(['userId' => $request->user()->userId]);
