@@ -16,6 +16,7 @@
         <LoginObject v-if="isLoginActive" />
         <RegisterObject v-if="!isLoginActive" />
       </div>
+      <div class="LogoText-text">Welcome To My Group Project Application Project</div>
     </div>
   </div>
 </template>
@@ -59,13 +60,14 @@ export default {
 
 /* Login Window */
 .login-window {
-  position: relative; /* Changed to relative positioning */
+  position:fixed; /* Changed to relative positioning */
   width: 470px;
   height: 865px;
   background-color: #969c9e; /* Set fill color to D9D9D9 */
   border-radius: 8px; /* Optional: Add rounded corners */
   padding: 0 34px; /* Add padding to the sides of the login window */
-  left: -300px; /* Move the entire window 100px to the left */
+  top: 50px;
+  left: 100px; /* Move the entire window 100px to the left */
 }
 
 /* Welcome Text */
@@ -79,6 +81,22 @@ export default {
   font-weight: 600; /* Semi-bold */
   font-size: 36px;
   color: #494949;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.LogoText-text {
+  position: fixed;
+  top: 450px;
+  left: 700px; /* Adjusted left position (-100px extra) */
+  width: 500px;
+  height: 80px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600; /* Semi-bold */
+  font-size: 36px;
+  color: #5f5f5f;
   display: flex;
   justify-content: center;
   align-items: center;
