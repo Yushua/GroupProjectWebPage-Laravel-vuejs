@@ -12,7 +12,6 @@
           <button class="login-btn" @click="setLogin">Login</button>
           <button class="register-btn" @click="setRegister">Register</button>
         </div>
-
         <!-- Conditionally render LoginObject or RegisterObject -->
         <LoginObject v-if="isLoginActive" />
         <RegisterObject v-if="!isLoginActive" />
@@ -61,24 +60,25 @@ export default {
 /* Login Window */
 .login-window {
   position: relative; /* Changed to relative positioning */
-  width: 670px;
+  width: 470px;
   height: 865px;
-  background-color: #d9d9d9; /* Set fill color to D9D9D9 */
+  background-color: #969c9e; /* Set fill color to D9D9D9 */
   border-radius: 8px; /* Optional: Add rounded corners */
   padding: 0 34px; /* Add padding to the sides of the login window */
+  left: -300px; /* Move the entire window 100px to the left */
 }
 
 /* Welcome Text */
 .welcome-text {
   position: absolute;
   top: 150px;
-  left: 34px;
+  left: 14px; /* Adjusted left position (-100px extra) */
   width: 500px;
   height: 80px;
   font-family: 'Inter', sans-serif;
   font-weight: 600; /* Semi-bold */
   font-size: 36px;
-  color: #000;
+  color: #494949;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -89,7 +89,7 @@ export default {
 .action-buttons {
   position: absolute;
   top: 245px; /* Position them below the welcome text */
-  left: 50%;
+  left: 50%; /* Moved an extra 100px to the left */
   transform: translateX(-50%); /* Center horizontally */
   display: flex;
   gap: 20px; /* Space between the buttons */
@@ -117,7 +117,7 @@ export default {
 .login-object, .register-object {
   position: absolute;
   top: 320px; /* Set position below the "Please Login or Register" text */
-  left: 50%; /* Horizontally center the LoginObject/RegisterObject */
+  left: 50%;  /* Moved an extra 100px to the left */
   transform: translateX(-50%); /* Offset by 50% of its width */
 }
 </style>

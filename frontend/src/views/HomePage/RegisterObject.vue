@@ -69,7 +69,8 @@ export default {
       try {
         const response = await api.post('/register', {
           username: this.username, // Correct order: username first
-          password: this.password // Then password
+          password: this.password, // Then password
+          password_confirmation: this.confirmPassword // Send the confirmPassword as password_confirmation
         })
 
         // Success: Clear fields and show success message
