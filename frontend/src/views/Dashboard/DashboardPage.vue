@@ -69,7 +69,7 @@ export default defineComponent({
 <style scoped>
 .dashboard {
   position: relative;
-  height: 100vh;
+  height: 110vh;
   width: 100%;
   /* background-color: #000000; */
 }

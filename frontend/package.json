@@ -8,9 +8,10 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@iconify/vue": "^4.2.0",
     "axios": "^1.7.9",
     "core-js": "^3.8.3",
-    "radix-vue": "^1.9.11",
+    "radix-vue": "^1.9.12",
     "vue": "^3.2.13",
     "vue-loader": "^17.4.2",
     "vue-router": "^4.5.0"
