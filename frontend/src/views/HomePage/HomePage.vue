@@ -5,7 +5,7 @@
       <!-- Login window -->
       <div class="login-window">
         <!-- Welcome text -->
-        <div class="welcome-text">Welcome to my Project.</div>
+        <div class="welcome-text">Welcome to my Project</div>
 
         <!-- Buttons for Login and Register -->
         <div class="action-buttons">
@@ -16,7 +16,6 @@
         <LoginObject v-if="isLoginActive" />
         <RegisterObject v-if="!isLoginActive" />
       </div>
-      <div class="LogoText">Welcome to my Project Group project Application</div>
     </div>
   </div>
 </template>
@@ -54,34 +53,19 @@ export default {
   background-color: #2f3233; /* Set background color to 2F3233 */
   height: 100vh;
   display: flex;
-
+  justify-content: center;
+  align-items: center;
 }
 
 /* Login Window */
 .login-window {
-  position: fixed; /* Changed to relative positioning */
+  position: relative; /* Changed to relative positioning */
   width: 470px;
   height: 865px;
   background-color: #969c9e; /* Set fill color to D9D9D9 */
   border-radius: 8px; /* Optional: Add rounded corners */
   padding: 0 34px; /* Add padding to the sides of the login window */
-  top: 30px;
-  left: 30px;
-}
-
-.LogoText {
-  font-family: 'Inter', sans-serif;
-  font-weight: 600; /* Semi-bold */
-  font-size: 48px;
-  color: #494949;
-  position: fixed; /* Use absolute positioning */
-  top: 50%; /* Vertically center relative to the parent */
-  left: calc(1000px - 350px); /* Move 500px to the left */
-  transform: translateY(-50%); /* Adjust for vertical centering */
-  width: 640px; /* Ensure proper width syntax */
-  height: 260px; /* Ensure proper height syntax */
-  display: flex;
-  align-items: center;
+  left: -300px; /* Move the entire window 100px to the left */
 }
 
 /* Welcome Text */

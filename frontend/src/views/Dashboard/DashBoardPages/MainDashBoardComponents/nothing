@@ -1,0 +1,156 @@
+<template>
+  <div class="message-dashboard-container">
+    <!-- List of Messages -->
+    <div v-for="message in messages" :key="message.MessageID" class="message-item" @click="openDialog(message)">
+      <div class="message-header">
+        <strong>{{ message.nameSender }}</strong> - {{ message.Headline }} - {{ formatDate(message.DateSend) }}
+      </div>
+    </div>
+
+    <!-- Radix Dialog for message details -->
+    <DialogRoot v-if="selectedMessage">
+      <DialogTrigger
+        class="hidden" 
+      >
+        <!-- Invisible trigger to open the dialog -->
+      </DialogTrigger>
+      <DialogPortal>
+        <DialogOverlay class="bg-blackA9 fixed inset-0 z-30" />
+        <DialogContent
+          class="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none z-[100]"
+        >
+          <DialogTitle class="text-mauve12 m-0 text-[17px] font-semibold">
+            Message Details
+          </DialogTitle>
+          <DialogDescription class="text-mauve11 mt-[10px] mb-5 text-[15px] leading-normal">
+            Here are the details of the message.
+          </DialogDescription>
+          <div class="message-details">
+            <p><strong>From:</strong> {{ selectedMessage.nameSender }}</p>
+            <p><strong>Headline:</strong> {{ selectedMessage.Headline }}</p>
+            <p><strong>Message:</strong> {{ selectedMessage.Message }}</p>
+            <p><strong>Sent on:</strong> {{ formatDate(selectedMessage.DateSend) }}</p>
+
+            <!-- Reply Form -->
+            <textarea v-model="replyMessage" placeholder="Write your message..."></textarea>
+            <button @click="sendReply">Send Message</button>
+          </div>
+
+          <DialogClose 
+            class="text-grass11 hover:bg-green4 focus:shadow-green7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+            aria-label="Close"
+            @click="closeDialog"
+          >
+            <Icon icon="lucide:x" />
+          </DialogClose>
+        </DialogContent>
+      </DialogPortal>
+    </DialogRoot>
+  </div>
+</template>
+
+<script setup>
+import { DialogClose, DialogContent, DialogDescription, DialogOverlay, DialogPortal, DialogRoot, DialogTitle, DialogTrigger } from 'radix-vue'
+import { Icon } from '@iconify/vue'
+
+import { ref } from 'vue'
+
+const messages = ref([
+  {
+    SenderID: '123',
+    nameSender: 'John Doe',
+    Headline: 'Meeting Reminder',
+    DateSend: new Date('2024-12-29T12:00:00'),
+    MessageID: 'm1',
+    Message: 'Just a reminder about our meeting tomorrow at 3 PM.'
+  },
+  {
+    SenderID: '456',
+    nameSender: 'Jane Smith',
+    Headline: 'Project Update',
+    DateSend: new Date('2024-12-28T10:00:00'),
+    MessageID: 'm2',
+    Message: 'The project is progressing well, we are on track.'
+  }
+])
+
+const selectedMessage = ref(null)
+const replyMessage = ref('')
+
+// Open the dialog and display selected message
+function openDialog(message) {
+  selectedMessage.value = message
+}
+
+// Close the dialog and reset message
+function closeDialog() {
+  selectedMessage.value = null
+  replyMessage.value = ''
+}
+
+// Format the date
+function formatDate(date) {
+  return new Date(date).toLocaleString()  // Simple date formatting
+}
+
+// Send reply message and add it to the top
+function sendReply() {
+  if (replyMessage.value.trim() !== '') {
+    const reply = {
+      SenderID: '789', // Simulating "You" as the sender
+      nameSender: 'You',
+      Headline: Re: ${selectedMessage.value.Headline},
+      DateSend: new Date(),
+      MessageID: m${Date.now()},  // New ID based on timestamp
+      Message: replyMessage.value
+    }
+
+    // Insert new message at the top
+    messages.value.unshift(reply)
+
+    // Close the dialog and clear the reply message
+    closeDialog()
+  }
+}
+</script>
+
+<style scoped>
+.message-dashboard-container {
+  padding: 20px;
+}
+
+.message-item {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.message-header {
+  font-size: 1.2em;
+  color: #333;
+}
+
+.message-details {
+  padding: 20px;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  margin: 10px 0;
+}
+
+button {
+  padding: 10px;
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #34495e;
+}
+</style>
