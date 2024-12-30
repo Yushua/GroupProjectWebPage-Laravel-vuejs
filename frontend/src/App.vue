@@ -1,14 +1,15 @@
 <template>
-  <router-view></router-view> <!-- Your routing component -->
+  <div id="app">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import { checkToken } from '@/services/authService'
-
 export default {
-  name: 'App',
-  created () {
-    checkToken()
-  }
+  name: 'App'
 }
 </script>
+
+<style>
+/* Add your global styles here */
+</style>
