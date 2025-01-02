@@ -1,77 +1,79 @@
 <template>
   <div id="app">
     <div class="button-container">
-      <button @click="createProject" class="nav-button">
-        Create Project
-      </button>
-      <button @click="addRole" class="nav-button">
-        Add Role
-      </button>
-      <button @click="addTask" class="nav-button">
-        Add Task
-      </button>
-      <button @click="setupSprint" class="nav-button">
-        Setup Sprint
-      </button>
-      <button @click="deleteProject" class="nav-button">
-        Github
-      </button>
+      <button @click="createProject" class="nav-button">Create Project</button>
+      <button @click="addRole" class="nav-button">Add Role</button>
+      <button @click="addTask" class="nav-button">Add Task</button>
+      <button @click="setupSprint" class="nav-button">Setup Sprint</button>
+      <button @click="deleteProject" class="nav-button">Github</button>
     </div>
 
-    <nav class="MessageDashboard-container" style="position: absolute; top: 30px; left:263px; width: 367px; height: 400px;">
-      <AllProjectsComponent />
+    <nav
+      class="MessageDashboard-container"
+      style="position: absolute; top: 30px; left: 263px; width: 550px; height: 400px;"
+    >
+      <AllProjectsComponent @project-selected="handleProjectSelected" />
     </nav>
-    <nav class="MessageDashboard-container" style="position: absolute; top: 30px; left: 652px; width: 367px; height: 400px;">
-      <AllRolesComponent />
+
+    <nav
+      class="MessageDashboard-container"
+      style="position: absolute; top: 30px; left: 859px; width: 550px; height: 400px;"
+    >
+      <AllRolesComponent :projectID="selectedProjectID" />
     </nav>
-    <nav class="MessageDashboard-container" style="position: absolute; top: 30px; left: 1041px; width: 367px; height: 400px;">
-      <AllMessagesComponent />
+
+    <nav
+      class="MessageDashboard-container"
+      style="position: absolute; top: 512px; left: 30px; width: 1379px; height: 400px;"
+    >
+      <AllMessagesComponent :projectID="selectedProjectID" />
     </nav>
   </div>
 </template>
 
 <script>
+import AllProjectsComponent from './ProjectPageComponents/AllProjectsComponent.vue'
+import AllRolesComponent from './ProjectPageComponents/AllRolesComponent.vue'
+import AllMessagesComponent from './ProjectPageComponents/AllMessagesComponent.vue'
+
 export default {
   name: 'DashboardProjectPage',
   components: {
-    AllProjectsComponent: () => import('./ProjectPageComponents/AllProjectsComponent.vue'),
-    AllRolesComponent: () => import('./ProjectPageComponents/AllRolesComponent.vue'),
-    AllMessagesComponent: () => import('./ProjectPageComponents/AllMessagesComponent.vue')
+    AllProjectsComponent,
+    AllRolesComponent,
+    AllMessagesComponent
   },
   data () {
-    return {}
+    return {
+      selectedProjectID: null
+    }
   },
   methods: {
-    createProject () {
-      console.log('Creating project...')
-      // Replace with actual HTTP request logic
-      // this.$axios.post('/projects', { ... })
+    handleProjectSelected (projectID) {
+      console.log('Selected ProjectID:', projectID)
+      this.selectedProjectID = projectID
     },
-    addRole () {
-      console.log('Adding role...')
-      // Replace with actual HTTP request logic
-      // this.$axios.post('/roles', { ... })
+    async createProject () {
+      console.log('Create Project')
     },
-    addTask () {
-      console.log('Adding task...')
-      // Replace with actual HTTP request logic
-      // this.$axios.post('/Roles', { ... })
+    async addRole () {
+      console.log('Add Role')
     },
-    setupSprint () {
-      console.log('Setting up sprint...')
-      // Replace with actual HTTP request logic
-      // this.$axios.post('/sprints', { ... })
+    async addTask () {
+      console.log('Add Task')
     },
-    deleteProject () {
-      console.log('Deleting project...')
-      // Replace with actual HTTP request logic
-      // this.$axios.delete('/projects/:id')
+    async setupSprint () {
+      console.log('Setup Sprint')
+    },
+    async deleteProject () {
+      console.log('Delete Project')
     }
   }
 }
 </script>
 
 <style scoped>
+/* Kept unchanged from your current styles */
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -85,8 +87,8 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
-  top: -50px!important;
-  left: -10px!important;
+  top: -50px !important;
+  left: -10px !important;
   gap: 15px;
   margin: 20px;
 }
@@ -102,7 +104,7 @@ export default {
   cursor: pointer;
   text-align: center;
   line-height: 34px;
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 16px;
   font-weight: 300;
 }
