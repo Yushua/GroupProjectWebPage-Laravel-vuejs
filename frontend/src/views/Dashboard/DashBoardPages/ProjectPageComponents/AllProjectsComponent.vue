@@ -49,6 +49,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  width: 100%!important;
   padding: 15px;
   overflow-y: auto;
 }
@@ -57,6 +58,7 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 15px;
+  width: 100%!important;
   background-color: #4caf50;
   color: white;
   border: none;

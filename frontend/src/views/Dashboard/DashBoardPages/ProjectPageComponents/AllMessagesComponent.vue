@@ -29,13 +29,25 @@ export default {
           ProjectID: '1',
           nameSender: 'John Doe',
           Headline: 'Meeting Reminder'
+        },
+        {
+          MessageID: '2',
+          ProjectID: '2',
+          nameSender: 'Jane Smith',
+          Headline: 'Task Update'
+        },
+        {
+          MessageID: '3',
+          ProjectID: '1',
+          nameSender: 'Alex Johnson',
+          Headline: 'New Task Assigned'
         }
       ]
     }
   },
   computed: {
     filteredMessages () {
-      return this.messages.filter(msg => msg.ProjectID === this.projectID)
+      return this.messages.filter(msg => String(msg.ProjectID) === String(this.projectID))
     }
   }
 }
@@ -44,5 +56,17 @@ export default {
 <style scoped>
 .message-container {
   padding: 15px;
+  width: 95.5%;
+}
+.message-item {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  width: 100%!important;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 </style>
