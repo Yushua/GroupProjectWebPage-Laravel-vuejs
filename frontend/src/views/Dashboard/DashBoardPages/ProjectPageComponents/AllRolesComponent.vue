@@ -1,7 +1,7 @@
 <template>
   <div class="role-container">
     <div v-if="projectID">
-      <h3 class="role-button">Roles for Project ID: {{ projectID }}</h3>
+      <!-- <h3>Roles for Project ID: {{ projectID }}</h3> -->
       <button
         v-for="role in filteredRoles"
         :key="role.RoleID"
@@ -9,6 +9,7 @@
         @click="$emit('role-selected', role)"
       >
         <div class="role-name">{{ role.RoleName }}</div>
+        <div class="role-name">{{ role.Description }}</div>
       </button>
     </div>
     <div v-else>
@@ -38,25 +39,25 @@ export default {
         {
           RoleID: '2',
           RoleName: 'Designer',
-          ProjectID: '2',
+          ProjectID: '1',
           Description: 'Responsible for design and UI/UX.'
         },
         {
           RoleID: '2',
           RoleName: 'Designer',
-          ProjectID: '2',
+          ProjectID: '1',
           Description: 'Responsible for design and UI/UX.'
         },
         {
           RoleID: '2',
           RoleName: 'Designer',
-          ProjectID: '2',
+          ProjectID: '1',
           Description: 'Responsible for design and UI/UX.'
         },
         {
           RoleID: '2',
           RoleName: 'Designer',
-          ProjectID: '2',
+          ProjectID: '1',
           Description: 'Responsible for design and UI/UX.'
         },
         {
@@ -64,13 +65,27 @@ export default {
           RoleName: 'Project Manager',
           ProjectID: '1',
           Description: 'Responsible for overseeing the project.'
+        },
+        {
+          RoleID: '4',
+          RoleName: 'Tester',
+          ProjectID: '1',
+          Description: 'Ensures software quality.'
+        },
+        {
+          RoleID: '5',
+          RoleName: 'Business Analyst',
+          ProjectID: '1',
+          Description: 'Bridges business and technical teams.'
         }
       ]
     }
   },
   computed: {
     filteredRoles () {
-      return this.roles.filter(role => String(role.ProjectID) === String(this.projectID))
+      return this.roles.filter(
+        (role) => String(role.ProjectID) === String(this.projectID)
+      )
     }
   }
 }
@@ -78,22 +93,28 @@ export default {
 
 <style scoped>
 .role-container {
-  padding: 15px;
-  width: 100%;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Allows roles to wrap when out of bounds */
+  padding: 10px;
+  left: -30px;
+  overflow-y: auto;
 }
+
 .role-button {
-  display: flex;
-  flex-wrap: wrap;
-  display: block;
+  flex: 1 1 200px; /* Minimum width of 200px and flexible */
+  max-width: 330px; /* Optional: Set max width for buttons */
   background-color: #4caf50;
   color: white;
-  padding: 10px;
-  margin: 5px 0;
+
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  text-align: center;
+  margin: 5px; /* Adds margin around buttons */
+  width: 800px;
+  height: 100px;
+  box-sizing: border-box; /* Includes padding and border in width/height */
+  overflow-y: auto;
 }
 
 .role-button:hover {

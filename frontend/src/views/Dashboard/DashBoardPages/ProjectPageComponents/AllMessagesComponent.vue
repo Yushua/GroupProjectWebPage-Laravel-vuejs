@@ -60,13 +60,16 @@ export default {
 }
 .message-item {
   display: flex;
-  flex-direction: column;
-  padding: 5px;
-  width: 100%!important;
+  flex-wrap: wrap;
+  display: block;
   background-color: #4caf50;
   color: white;
+  padding: 10px;
+  margin: 5px 0;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  overflow-y: auto;
 }
+
 </style>

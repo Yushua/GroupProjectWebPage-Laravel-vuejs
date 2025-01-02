@@ -127,7 +127,7 @@ export default {
     padding: 15px; /* Padding inside the container */
     width: 100%;
     height: 91,5%; /* Full height of the parent container */
-    overflow-y: auto; /* Add vertical scrollbar when content overflows */
+    overflow-y: auto;
     border: 1px solid #ccc; /* Optional: Border for better visual separation */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Box shadow for better styling */
   }
