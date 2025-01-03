@@ -2,49 +2,50 @@
   <div class="project-container">
     <button
       v-for="project in projects"
-      :key="project.ProjectID"
+      :key="project.projectId"
       class="project-button"
-      @click="$emit('project-selected', project.ProjectID)"
+      @click="$emit('project-selected', project.projectId)"
     >
-      <div class="project-name">{{ project.ProjectName }}</div>
-      <div class="project-description">{{ project.ProjectDescription }}</div>
-      <div class="project-status">{{ project.ProjectStatus }}</div>
+      <div class="project-name">{{ project.name }}</div>
+      <div class="project-description">{{ project.description }}</div>
+      <div class="project-status">{{ project.status }}</div>
     </button>
   </div>
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
   name: 'AllProjectsComponent',
   data () {
     return {
-      projects: [
-        {
-          ProjectID: '1',
-          ProjectName: 'Redesign Website',
-          ProjectDescription: 'A project to revamp the website.',
-          ProjectStatus: 'Editing'
-        },
-        {
-          ProjectID: '2',
-          ProjectName: 'Cloud Deployment',
-          ProjectDescription: 'Deploying to the cloud.',
-          ProjectStatus: 'Public'
-        },
-        {
-          ProjectID: '3',
-          ProjectName: 'Backend Optimization',
-          ProjectDescription: 'Optimizing backend performance.',
-          ProjectStatus: 'Private'
-        }
-      ]
+      projects: []
+    }
+  },
+  created () {
+    this.fetchProjects()
+  },
+  methods: {
+    async fetchProjects () {
+      try {
+        const token = localStorage.getItem('token')
+        const response = await api.get('/projects', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        this.projects = response.data
+      } catch (error) {
+        console.error('Error fetching projects:', error)
+        alert('An error occurred while fetching the projects.')
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-/* Kept unchanged from your current styles */
 .project-container {
   display: flex;
   flex-direction: column;
