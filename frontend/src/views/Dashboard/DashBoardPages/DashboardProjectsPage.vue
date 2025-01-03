@@ -2,10 +2,10 @@
   <div id="app">
     <div class="button-container">
       <button @click="toggleCreateProjectDialog" class="nav-button">Create Project</button>
-      <button @click="addRole" class="nav-button">Add Role</button>
+      <button @click="toggleAddRoleDialog" class="nav-button" :disabled="!selectedProjectID">Add Role</button>
       <button @click="addTask" class="nav-button">Add Task</button>
       <button @click="setupSprint" class="nav-button">Setup Sprint</button>
-      <button @click="deleteProject" class="nav-button">Github</button>
+      <button @click="deleteProject" class="nav-button">Delete Project</button>
     </div>
 
     <!-- Create Project Dialog -->
@@ -13,6 +13,14 @@
       v-if="isCreateProjectDialogOpen"
       @close="toggleCreateProjectDialog"
       @project-created="handleProjectCreated"
+    />
+
+    <!-- Add Role Dialog -->
+    <AddRoleDialog
+      v-if="isAddRoleDialogOpen"
+      :projectID="selectedProjectID"
+      @close="toggleAddRoleDialog"
+      @role-created="handleRoleCreated"
     />
 
     <nav
@@ -43,6 +51,7 @@ import AllProjectsComponent from './ProjectPageComponents/AllProjectsComponent.v
 import AllRolesComponent from './ProjectPageComponents/AllRolesComponent.vue'
 import AllMessagesComponent from './ProjectPageComponents/AllMessagesComponent.vue'
 import CreateProjectDialog from './ProjectPageComponents/CreateProjectDialog.vue'
+import AddRoleDialog from './ProjectPageComponents/AddRoleDialog.vue'
 
 export default {
   name: 'DashboardProjectPage',
@@ -50,15 +59,28 @@ export default {
     AllProjectsComponent,
     AllRolesComponent,
     AllMessagesComponent,
-    CreateProjectDialog
+    CreateProjectDialog,
+    AddRoleDialog
   },
   data () {
     return {
       selectedProjectID: null,
-      isCreateProjectDialogOpen: false
+      isCreateProjectDialogOpen: false,
+      isAddRoleDialogOpen: false
     }
   },
   methods: {
+    toggleAddRoleDialog () {
+      if (!this.selectedProjectID) {
+        alert('Please select a project first.')
+        return
+      }
+      this.isAddRoleDialogOpen = !this.isAddRoleDialogOpen
+    },
+    handleRoleCreated () {
+      console.log('Role created successfully.')
+      // Refresh role list if necessary
+    },
     handleProjectSelected (projectID) {
       console.log('Selected ProjectID:', projectID)
       this.selectedProjectID = projectID
@@ -69,9 +91,6 @@ export default {
     handleProjectCreated (newProject) {
       console.log('Project Created:', newProject)
       // Refresh project list or handle the new project as needed
-    },
-    async addRole () {
-      console.log('Add Role')
     },
     async addTask () {
       console.log('Add Task')
@@ -87,7 +106,6 @@ export default {
 </script>
 
 <style scoped>
-/* Kept unchanged from your current styles */
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -123,7 +141,12 @@ export default {
   font-weight: 300;
 }
 
-.nav-button:hover {
+.nav-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.nav-button:hover:not(:disabled) {
   background-color: #ececec;
 }
 </style>
