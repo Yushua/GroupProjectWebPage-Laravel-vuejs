@@ -1,7 +1,5 @@
 <?php
 
-// app/Models/Project.php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +15,7 @@ class Project extends Model
         'status',
         'invite_code',
         'users',
+        'description',  // Add description here to allow mass assignment
     ];
 
     // Relations
@@ -31,5 +30,9 @@ class Project extends Model
     public function messages() {
         return $this->hasMany(Message::class);
     }
-}
 
+    // Relationship to the owner
+    public function owner() {
+        return $this->belongsTo(User::class, 'owner_id');  // Assuming `owner_id` is the field that holds the owner reference
+    }
+}
