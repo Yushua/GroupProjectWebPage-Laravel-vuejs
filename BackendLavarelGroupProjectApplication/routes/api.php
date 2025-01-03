@@ -38,7 +38,8 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('/user-description/{userId?}', [DescriptionProfileController::class, 'getUserDescription']);
 
     Route::post('/CreateProject', [ProjectController::class, 'createProject']);
-
+    Route::get('/project-statuses', [ProjectController::class, 'getProjectStatuses']);
+    
     Route::post('/project/{projectId}/role', [ProjectController::class, 'addRole']); // Add role to project
     Route::post('/project/{projectId}/task', [ProjectController::class, 'addTask']); // Add task to project
     Route::get('/project/{projectId}/users', [ProjectController::class, 'getProjectUsers']); // Get project users

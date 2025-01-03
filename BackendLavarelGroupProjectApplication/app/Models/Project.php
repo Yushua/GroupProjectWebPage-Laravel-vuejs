@@ -2,37 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'projectId',
         'name',
-        'status',
         'invite_code',
+        'status',
         'users',
-        'description',  // Add description here to allow mass assignment
+        'description',
+        'owner_id',
+        'public', // Add this to the fillable attributes
     ];
 
-    // Relations
-    public function roles() {
-        return $this->hasMany(Role::class);
-    }
-
-    public function tasks() {
-        return $this->hasMany(Task::class);
-    }
-
-    public function messages() {
-        return $this->hasMany(Message::class);
-    }
-
-    // Relationship to the owner
-    public function owner() {
-        return $this->belongsTo(User::class, 'owner_id');  // Assuming `owner_id` is the field that holds the owner reference
-    }
+    protected $casts = [
+        'users' => 'array',
+        'public' => 'boolean', // Ensure this is treated as a boolean
+    ];
 }
