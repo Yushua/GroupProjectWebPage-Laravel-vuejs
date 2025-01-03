@@ -35,18 +35,20 @@ class AuthController extends Controller
         return response()->json(['message' => 'User registered successfully'], 201);
     }
 
-    // Login method
     public function login(LoginUserRequest $request)
     {
-        // The request is already validated by LoginUserRequest
-
-        // Retrieve credentials
         $credentials = $request->only('username', 'password');
-
         try {
-            if (!$token = JWTAuth::attempt($credentials)) { // Attempt login using JWTAuth
+            if (!$user = JWTAuth::attempt($credentials)) {
                 return response()->json(['error' => 'Invalid credentials'], 401);
             }
+            $userProfile = JWTUserProfile::where('username', $request->username)->first();
+            if (!$userProfile) {
+                return response()->json(['error' => 'User profile not found'], 400);
+            }
+            \Log::info('User ID being assigned to token:', ['userId' => $userProfile->userId]);
+            $token = JWTAuth::fromUser($userProfile, ['userId' => $userProfile->userId]);
+
         } catch (\Exception $e) {
             return response()->json(['error' => 'Could not create token', 'details' => $e->getMessage()], 500);
         }

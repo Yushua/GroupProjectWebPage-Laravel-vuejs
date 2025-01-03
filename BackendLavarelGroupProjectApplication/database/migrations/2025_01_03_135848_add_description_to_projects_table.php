@@ -9,14 +9,14 @@ return new class extends Migration
     public function up()
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->boolean('public')->default(false);  // Adds public column with default value
+            $table->text('description')->nullable();  // Adds the description column
         });
     }
 
     public function down()
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->dropColumn('public');  // Removes public column
+            $table->dropColumn('description');  // Removes the description column
         });
     }
 };

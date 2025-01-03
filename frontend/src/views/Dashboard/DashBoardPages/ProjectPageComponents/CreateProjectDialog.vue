@@ -23,7 +23,7 @@
           ></textarea>
         </div>
         <div class="form-group">
-          <label for="publicKey">Public Project:</label>
+          <label for="publicKey">Public Key:</label>
           <input type="checkbox" v-model="newProject.publicKey" />
         </div>
         <div class="form-group">
@@ -64,10 +64,10 @@ export default {
     },
     async fetchStatuses () {
       try {
-        const token = localStorage.getItem('auth_token') // Get the token from localStorage
+        const token = localStorage.getItem('token')
         const response = await api.get('/project-statuses', {
           headers: {
-            Authorization: `Bearer ${token}` // Include the Bearer token in the headers
+            Authorization: `Bearer ${token}`
           }
         })
         this.statuses = response.data
@@ -78,13 +78,13 @@ export default {
     },
     async createProject () {
       try {
-        const token = localStorage.getItem('auth_token')
+        const token = localStorage.getItem('token')
 
         const response = await api.post('/CreateProject', {
           ProjectName: this.newProject.ProjectName,
           ProjectDescription: this.newProject.ProjectDescription,
           publicKey: this.newProject.publicKey,
-          statusKey: this.newProject.statusKey // Send the selected statusKey
+          statusKey: this.newProject.statusKey
         }, {
           headers: {
             Authorization: `Bearer ${token}`

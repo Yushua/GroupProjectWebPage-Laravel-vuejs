@@ -6,14 +6,27 @@ use App\Models\Project;
 use App\Models\Role;
 use App\Models\Task;
 use App\Models\Message;
+use App\Models\JWTUserProfile;
 use Illuminate\Http\Request;
-use App\DTOs\CreateProjectDTO;
+use App\Http\Requests\CreateProjectDTO;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ProjectController extends Controller
 {
     public function createProject(Request $request)
     {
+        $userId = JWTAuth::parseToken()->getClaim('userId');
+
+        \Log::info('User ID from token:', ['userId' => $userId]);
+
+        $userProfile = JWTUserProfile::where('userId', $userId)->first();
+
+        if (!$userProfile) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
         $statuses = [
             'InProgressPrivate',
             'InProgressPublic',
@@ -27,33 +40,41 @@ class ProjectController extends Controller
             'ProjectName' => 'required|string|max:255',
             'ProjectDescription' => 'required|string|max:1000',
             'publicKey' => 'required|boolean',
-            'statusKey' => ['required', 'string', Rule::in($statuses)], // Validate statusKey
+            'statusKey' => ['required', 'string', Rule::in($statuses)],
         ]);
 
         $projectDTO = CreateProjectDTO::fromRequest($request);
+
+        $status = '';
+        if ($projectDTO->statusKey == 'Private') {
+            $status = 'InProgressPrivate';
+        } elseif ($projectDTO->statusKey == 'Public') {
+            $status = 'InProgressPublic';
+        } else {
+            return response()->json(['error' => 'Invalid statusKey provided'], 400);
+        }
+
         $project = Project::create([
             'projectId' => uniqid(),
             'name' => $projectDTO->ProjectName,
             'invite_code' => uniqid(),
-            'status' => $projectDTO->statusKey,
-            'users' => json_encode([$request->user()->id]),
+            'status' => $status,
+            'users' => json_encode($userId),
             'description' => $projectDTO->ProjectDescription,
-            'owner_id' => $request->user()->id,
+            'owner_id' => $userId,
             'public' => $request->input('publicKey'),
         ]);
 
         return response()->json($project, 201);
     }
 
+
+
     public function getProjectStatuses()
     {
         $statuses = [
-            'InProgressPrivate',
-            'InProgressPublic',
             'Private',
             'Public',
-            'FinishedPrivate',
-            'FinishedPublic'
         ];
 
         return response()->json($statuses);

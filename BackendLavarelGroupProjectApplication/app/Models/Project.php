@@ -14,7 +14,7 @@ class Project extends Model
         'users',
         'description',
         'owner_id',
-        'public', // Add this to the fillable attributes
+        'public',
     ];
 
     protected $casts = [
