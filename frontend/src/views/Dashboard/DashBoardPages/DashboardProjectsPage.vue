@@ -10,21 +10,21 @@
 
     <nav
       class="MessageDashboard-container"
-      style="position: absolute; top: 30px; left: 270px; width: 730px; height: 400px;"
+      style="position: absolute; top: 30px; left: 270px; width: 735px; height: 400px;"
     >
       <AllProjectsComponent @project-selected="handleProjectSelected" />
     </nav>
 
     <nav
       class="MessageDashboard-container"
-      style="position: absolute; top: 30px; left: 1045px; width: 730px; height: 400px;"
+      style="position: absolute; top: 30px; left: 1050px; width: 735px; height: 400px;"
     >
       <AllRolesComponent :projectID="selectedProjectID" />
     </nav>
 
     <nav
       class="MessageDashboard-container"
-      style="position: absolute; top: 512px; left: 30px; width: 1745px; height: 400px;"
+      style="position: absolute; top: 470px; left: 30px; width: 1755px; height: 400px;"
     >
       <AllMessagesComponent :projectID="selectedProjectID" />
     </nav>

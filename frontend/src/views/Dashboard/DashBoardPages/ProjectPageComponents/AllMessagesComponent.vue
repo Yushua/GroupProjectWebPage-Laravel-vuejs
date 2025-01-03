@@ -26,19 +26,22 @@ export default {
       messages: [
         {
           MessageID: '1',
-          ProjectID: '1',
+          TypeMessage: 'project',
+          TypeId: '1', // applies to the ID, so look up all Messages with project and this ID
           nameSender: 'John Doe',
           Headline: 'Meeting Reminder'
         },
         {
           MessageID: '2',
-          ProjectID: '2',
+          TypeMessage: 'project',
+          TypeId: '1',
           nameSender: 'Jane Smith',
           Headline: 'Task Update'
         },
         {
           MessageID: '3',
-          ProjectID: '1',
+          TypeMessage: 'project',
+          TypeId: '1',
           nameSender: 'Alex Johnson',
           Headline: 'New Task Assigned'
         }
@@ -56,7 +59,7 @@ export default {
 <style scoped>
 .message-container {
   padding: 15px;
-  width: 95.5%;
+  width: 98.5%;
 }
 .message-item {
   display: flex;

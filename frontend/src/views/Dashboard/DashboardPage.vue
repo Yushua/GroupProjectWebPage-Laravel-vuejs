@@ -20,8 +20,6 @@
 <script>
 import { defineComponent } from 'vue'
 import DashboardMainPage from './DashBoardPages/DashboardMainPage.vue'
-import DashboardMessagePage from './DashBoardPages/DashboardMessagePage.vue'
-import DashboardTaskPage from './DashBoardPages/DashboardTaskPage.vue'
 import DashboardProjectsPage from './DashBoardPages/DashboardProjectsPage.vue'
 import DashboardSearchProjects from './DashBoardPages/DashboardSearchProjects.vue'
 import DashboardUserProfile from './DashBoardPages/DashboardUserProfile.vue'
@@ -33,8 +31,6 @@ export default defineComponent({
       pages: [
         { file: 'DashboardMainPage', name: 'Main', component: DashboardMainPage },
         { file: 'DashboardProjectsPage', name: 'Projects', component: DashboardProjectsPage },
-        { file: 'DashboardMessagePage', name: 'Messages', component: DashboardMessagePage },
-        { file: 'DashboardTaskPage', name: 'Tasks', component: DashboardTaskPage },
         { file: 'DashboardSearchPage', name: 'Search', component: DashboardSearchProjects },
         { file: 'DashboardUserProfile', name: 'Profile', component: DashboardUserProfile }
       ],
