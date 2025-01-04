@@ -19,6 +19,6 @@ class Project extends Model
 
     protected $casts = [
         'users' => 'array',
-        'public' => 'boolean', // Ensure this is treated as a boolean
+        'public' => 'boolean',
     ];
 }

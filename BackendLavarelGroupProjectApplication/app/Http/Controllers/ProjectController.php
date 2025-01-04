@@ -59,7 +59,7 @@ class ProjectController extends Controller
             'name' => $projectDTO->ProjectName,
             'invite_code' => uniqid(),
             'status' => $status,
-            'users' => json_encode($userId),
+            'users' => json_encode([$userId]),
             'description' => $projectDTO->ProjectDescription,
             'owner_id' => $userId,
             'public' => $request->input('publicKey'),
@@ -89,16 +89,8 @@ class ProjectController extends Controller
         \Log::info('projects:', ['projects' => $projects]);
 
         $userProjects = $projects->filter(function ($project) use ($userId) {
-            // Decode the JSON-encoded string
-            $users = json_decode($project->users, true);
-
-            // If decoding fails, log and skip this project
-            if ($users === null) {
-                \Log::warning('Failed to decode users field for project:', ['project' => $project]);
-                return false;
-            }
-
-            return in_array($userId, (array) $users, true);
+            $users = $project->users; // No need for json_decode() here
+            return in_array($userId, $users, true);
         });
 
         \Log::info('userProjects', ['userProjects' => $userProjects]);

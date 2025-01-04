@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 use App\Models\Role;
+use App\Models\Project;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class RoleController extends Controller
 {
@@ -29,8 +31,6 @@ class RoleController extends Controller
             'roleName' => 'required',
             'description' => 'required',
         ]);
-
-        // Create new role and assign values
         $role = new Role();
         $role->RoleName = $request->roleName; // Use RoleName as column in DB
         $role->project_id = $request->project_id; // Use project_id as column in DB
@@ -42,9 +42,24 @@ class RoleController extends Controller
         return response()->json(['message' => 'Role created successfully'], 201);
     }
 
-    public function getRolesByProject(Request $request, $projectID)
+    public function getRolesByProject(Request $request, $projectId)
     {
-        $roles = Role::where('ProjectID', $projectID)->get();
+        \Log::info('Project ID from token:', ['$projectId' => $projectId]);
+        $project = Project::where('projectId', $projectId)->first();
+        $userId = JWTAuth::parseToken()->getClaim('userId');
+        if (!$project) {
+            return response()->json(['error' => 'Project not found'], 404);
+        }
+        $users = $project->users;
+        if (is_string($users)) {
+            $users = json_decode($users, true);
+        }
+        $isUserPartOfProject = in_array($userId, $users);
+        if (!$isUserPartOfProject) {
+            return response()->json(['error' => 'User is not part of the project'], 403);
+        }
+        \Log::info('i am here');
+        $roles = Role::where('project_id', $projectId)->get();
         return response()->json($roles);
     }
 }

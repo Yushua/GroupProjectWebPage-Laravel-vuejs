@@ -1,6 +1,6 @@
 <template>
   <div class="role-container">
-    <div v-if="projectID">
+    <div v-if="roles.length > 0">
       <button
         v-for="role in filteredRoles"
         :key="role.RoleID"
@@ -8,17 +8,18 @@
         @click="$emit('role-selected', role)"
       >
         <div class="role-name">{{ role.RoleName }}</div>
-        <div class="role-name">{{ role.Description }}</div>
-        <div v-if="role.RoleName"><div class="role-name">{{ role.RoleName }}</div></div>
+        <div class="role-description">{{ role.Description }}</div>
       </button>
     </div>
     <div v-else>
-      <p>No project selected.</p>
+      <p>No roles available for the selected project.</p>
     </div>
   </div>
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
   name: 'AllRolesComponent',
   props: {
@@ -29,79 +30,40 @@ export default {
   },
   data () {
     return {
-      roles: [
-        {
-          RoleID: '1',
-          RoleName: 'Developer',
-          ProjectID: '1',
-          UserID: 3,
-          UserName: 'someone',
-          Description: 'Responsible for coding and implementation.'
-        },
-        {
-          RoleID: '2',
-          RoleName: 'Designer',
-          ProjectID: '1',
-          UserID: -1,
-          UserName: '',
-          Description: 'Responsible for design and UI/UX.'
-        },
-        {
-          RoleID: '2',
-          RoleName: 'Designer',
-          ProjectID: '1',
-          UserID: 3,
-          UserName: 'someone',
-          Description: 'Responsible for design and UI/UX.'
-        },
-        {
-          RoleID: '2',
-          RoleName: 'Designer',
-          ProjectID: '1',
-          UserID: 3,
-          UserName: 'someone',
-          Description: 'Responsible for design and UI/UX.'
-        },
-        {
-          RoleID: '2',
-          RoleName: 'Designer',
-          ProjectID: '1',
-          UserID: 3,
-          UserName: 'someone',
-          Description: 'Responsible for design and UI/UX.'
-        },
-        {
-          RoleID: '3',
-          RoleName: 'Project Manager',
-          ProjectID: '1',
-          UserID: 3,
-          UserName: 'someone',
-          Description: 'Responsible for overseeing the project.'
-        },
-        {
-          RoleID: '4',
-          RoleName: 'Tester',
-          ProjectID: '1',
-          UserID: 3,
-          UserName: 'someone',
-          Description: 'Ensures software quality.'
-        },
-        {
-          RoleID: '5',
-          RoleName: 'Business Analyst',
-          ProjectID: '1',
-          UserID: -1,
-          UserName: '',
-          Description: 'Bridges business and technical teams.'
-        }
-      ]
+      roles: [] // Initially empty, will be populated from the API
+    }
+  },
+  watch: {
+    projectID: {
+      immediate: true, // Fetch roles when the component is mounted
+      handler (newProjectID) {
+        this.fetchRoles(newProjectID)
+      }
+    }
+  },
+  methods: {
+    async fetchRoles (projectID) {
+      if (!projectID) {
+        this.roles = []
+        return
+      }
+      try {
+        const token = localStorage.getItem('token')
+        const response = await api.get(`/roles/${projectID}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        this.roles = response.data
+      } catch (error) {
+        console.error('Error fetching roles:', error)
+        this.roles = [] // Clear roles if an error occurs
+      }
     }
   },
   computed: {
     filteredRoles () {
-      return this.roles.filter(
-        (role) => String(role.ProjectID) === String(this.projectID)
-      )
+      return this.roles
     }
   }
 }
@@ -111,25 +73,21 @@ export default {
 .role-container {
   display: flex;
   flex-wrap: wrap;
-  padding: 10px;
-  left: -30px;
-  overflow-y: auto;
+  width: 100%;
+  padding: 10px!important; /* Space between buttons */
 }
 
 .role-button {
-  flex: 1 1 200px;
-  max-width: 330px;
+  width: 340px;
+  gap: 15px!important;
   background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   text-align: center;
-  margin: 5px;
-  width: 800px;
-  height: 100px;
   box-sizing: border-box;
-  overflow-y: auto;
+  height: 100px;
 }
 
 .role-button:hover {
@@ -147,4 +105,10 @@ export default {
 .role-name {
   font-size: 1.2em;
 }
+
+.role-description {
+  font-size: 1em;
+  color: #ccc;
+}
+
 </style>
