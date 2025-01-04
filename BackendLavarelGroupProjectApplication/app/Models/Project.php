@@ -21,4 +21,14 @@ class Project extends Model
         'users' => 'array',
         'public' => 'boolean',
     ];
+
+    public function users()
+    {
+        return $this->hasMany(JWTUserProfile::class);
+    }
+
+    public function roles()
+    {
+        return $this->hasMany(JWTUserProfile::class);
+    }
 }

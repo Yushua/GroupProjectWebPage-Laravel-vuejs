@@ -72,7 +72,7 @@ export default {
       try {
         const token = localStorage.getItem('token')
         const payload = {
-          project_id: this.projectID, // Make sure it's 'project_id', matching the DB column
+          projectId: this.projectID, // Make sure it's 'project_id', matching the DB column
           roleName: this.selectedRoleName, // This should match 'RoleName' in DB
           description: this.description // This should match 'Description' in DB
         }
