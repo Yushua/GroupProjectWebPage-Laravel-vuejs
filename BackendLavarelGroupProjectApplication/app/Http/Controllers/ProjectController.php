@@ -68,7 +68,42 @@ class ProjectController extends Controller
         return response()->json($project, 201);
     }
 
+    public function getUserProjects(Request $request)
+{
+    $userId = JWTAuth::parseToken()->getClaim('userId');
+    \Log::info('User ID from token:', ['userId' => $userId]);
 
+    // Retrieve all projects
+    $projects = Project::all();
+    \Log::info('projects:', ['projects' => $projects]);
+
+    $userProjects = $projects->filter(function ($project) use ($userId) {
+        // Get the 'users' attribute and check if it's a string or an array
+        $users = $project->users;
+
+        // If 'users' is a string (JSON encoded array), decode it into an array
+        if (is_string($users)) {
+            $users = json_decode($users, true);
+        }
+
+        // Ensure $users is an array and check if userId is in it
+        return is_array($users) && in_array($userId, $users, true);
+    });
+
+    \Log::info('userProjects', ['userProjects' => $userProjects]);
+
+    // Map the filtered projects into the desired response format
+    $result = $userProjects->map(function ($project) {
+        return [
+            'projectId' => $project->projectId,
+            'name' => $project->name,
+            'description' => $project->description,
+            'status' => $project->status,
+        ];
+    });
+
+    return response()->json($result);
+}
 
     public function getProjectStatuses()
     {

@@ -46,7 +46,8 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('/roles/{projectId}', [RoleController::class, 'getRolesByProject']);
 
     Route::post('/createTask', [TaskController::class, 'createTask']);
-
+    Route::post('/tasksbyProject', [TaskController::class, 'getTasksByProject']);
+    Route::post('/tasksByRole', [TaskController::class, 'getTasksByRole']);
 
     Route::post('/project/{projectId}/role', [ProjectController::class, 'addRole']); // Add role to project
     Route::post('/project/{projectId}/task', [ProjectController::class, 'addTask']); // Add task to project

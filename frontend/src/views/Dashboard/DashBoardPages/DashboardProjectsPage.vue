@@ -32,6 +32,22 @@
       @task-created="handleTaskCreated"
     />
 
+    <!-- all Tasks-->
+    <nav
+      class="MessageDashboard-container"
+      style="position: absolute; top: 470px; left: 30px; width: 1760px; height: 400px;"
+    >
+      <TasksByProjectComponent
+        v-if="selectedProjectID && !selectedRoleID"
+        :projectID="selectedProjectID"
+      />
+      <TasksByRoleComponent
+        v-if="selectedProjectID && selectedRoleID"
+        :projectID="selectedProjectID"
+        :roleID="selectedRoleID"
+      />
+    </nav>
+
     <!-- All Projects -->
     <nav
       class="MessageDashboard-container"
@@ -40,7 +56,6 @@
       <AllProjectsComponent @project-selected="handleProjectSelected" />
     </nav>
 
-    <!-- All Roles -->
     <nav
       class="MessageDashboard-container"
       style="position: absolute; top: 30px; left: 1050px; width: 740px; height: 400px;"
@@ -51,7 +66,6 @@
       />
     </nav>
 
-    <!-- All Messages -->
     <nav
       class="MessageDashboard-container"
       style="position: absolute; top: 470px; left: 30px; width: 1760px; height: 400px;"
@@ -68,6 +82,8 @@ import AllMessagesComponent from './ProjectPageComponents/AllMessagesComponent.v
 import CreateProjectDialog from './ProjectPageComponents/CreateProjectDialog.vue'
 import AddRoleDialog from './ProjectPageComponents/AddRoleDialog.vue'
 import AddTaskDialog from './ProjectPageComponents/AddTaskDialog.vue'
+import TasksByProjectComponent from './ProjectPageComponents/TasksByProjectComponent.vue'
+import TasksByRoleComponent from './ProjectPageComponents/TasksByRoleComponent.vue'
 
 export default {
   name: 'DashboardProjectsPage',
@@ -77,7 +93,9 @@ export default {
     AllMessagesComponent,
     CreateProjectDialog,
     AddRoleDialog,
-    AddTaskDialog
+    AddTaskDialog,
+    TasksByProjectComponent,
+    TasksByRoleComponent
   },
   data () {
     return {
