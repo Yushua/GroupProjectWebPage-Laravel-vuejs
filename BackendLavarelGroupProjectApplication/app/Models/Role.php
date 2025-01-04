@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,8 @@ class Role extends Model
         'roleId',
         'projectid',
         'description',
-        'userID'];
+        'userId',
+    ];
 
     public function user()
     {

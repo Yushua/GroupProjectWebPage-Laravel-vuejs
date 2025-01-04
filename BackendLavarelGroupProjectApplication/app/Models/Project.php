@@ -24,11 +24,11 @@ class Project extends Model
 
     public function users()
     {
-        return $this->hasMany(JWTUserProfile::class);
+        return $this->hasMany(JWTUserProfile::class, 'project_id', 'projectId');
     }
 
     public function roles()
     {
-        return $this->hasMany(JWTUserProfile::class);
+        return $this->hasMany(Role::class, 'projectid', 'projectId');
     }
 }

@@ -1,31 +1,34 @@
 <template>
-    <div class="dialog-overlay" @click="closeDialog">
-      <div class="dialog-content" @click.stop>
-        <h3>Add Role</h3>
-        <form @submit.prevent="createRole">
-          <div class="form-group">
-            <label for="roleName">Role Name:</label>
-            <select id="roleName" v-model="selectedRoleName" required>
-              <option v-for="role in roles" :key="role" :value="role">{{ role }}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea
-              id="description"
-              v-model="description"
-              required
-              placeholder="Enter role description"
-            ></textarea>
-          </div>
-          <div class="button-group">
-            <button type="button" @click="closeDialog" class="close-btn">Cancel</button>
-            <button type="submit" class="submit-btn">Create</button>
-          </div>
-        </form>
-      </div>
+  <div class="dialog-overlay" @click="closeDialog">
+    <div class="dialog-content" @click.stop>
+      <h3>Add Role</h3>
+      <form @submit.prevent="createRole">
+        <div class="form-group">
+          <label for="roleName">Role Name:</label>
+          <select id="roleName" v-model="selectedRoleName" required>
+            <option v-for="role in roles" :key="role" :value="role">{{ role }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="description">Description:</label>
+          <textarea
+            id="description"
+            v-model="description"
+            required
+            placeholder="Enter role description"
+          ></textarea>
+        </div>
+        <div class="button-group">
+          <button type="button" @click="closeDialog" class="close-btn">Cancel</button>
+          <button type="submit" class="submit-btn" :disabled="isSubmitting">
+            <span v-if="isSubmitting">Creating...</span>
+            <span v-else>Create</span>
+          </button>
+        </div>
+      </form>
     </div>
-  </template>
+  </div>
+</template>
 
 <script>
 import api from '@/api'
@@ -41,7 +44,8 @@ export default {
     return {
       roles: [],
       selectedRoleName: '',
-      description: ''
+      description: '',
+      isSubmitting: false // Add a loading state for better UX
     }
   },
   mounted () {
@@ -62,6 +66,7 @@ export default {
         this.roles = response.data
       } catch (error) {
         console.error('Error fetching roles:', error)
+        alert('Failed to fetch roles. Please try again.')
       }
     },
     async createRole () {
@@ -70,11 +75,12 @@ export default {
         return
       }
       try {
+        this.isSubmitting = true // Set loading state
         const token = localStorage.getItem('token')
         const payload = {
-          projectId: this.projectID, // Make sure it's 'project_id', matching the DB column
-          roleName: this.selectedRoleName, // This should match 'RoleName' in DB
-          description: this.description // This should match 'Description' in DB
+          projectId: this.projectID,
+          roleName: this.selectedRoleName,
+          description: this.description
         }
         const response = await api.post('/createRole', payload, {
           headers: {
@@ -88,81 +94,108 @@ export default {
         }
       } catch (error) {
         console.error('Error creating role:', error)
-        alert('An error occurred while creating the role.')
+        alert('An error occurred while creating the role. Please try again.')
+      } finally {
+        this.isSubmitting = false // Reset loading state
       }
     }
   }
 }
 </script>
 
-  <style scoped>
-  .dialog-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    padding: 10px;
-  }
+<style scoped>
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 10px;
+}
 
-  .dialog-content {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 500px;
-  }
+.dialog-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-  .form-group {
-    margin-bottom: 15px;
-  }
+h3 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+  font-weight: 600;
+}
 
-  textarea {
-    width: 90%;
-    height: 100px;
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
+.form-group {
+  margin-bottom: 15px;
+}
 
-  select {
-    width: 100%;
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-  }
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #34495e;
+}
 
-  button {
-    padding: 10px;
-    background-color: #2c3e50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-  }
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
 
-  button:hover {
-    background-color: #34495e;
-  }
+textarea {
+  height: 100px;
+}
 
-  .close-btn {
-    background-color: #c0392b;
-  }
+button {
+  padding: 10px;
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 14px;
+}
 
-  .close-btn:hover {
-    background-color: #e74c3c;
-  }
+button:hover {
+  background-color: #34495e;
+}
 
-  .submit-btn {
-    background-color: #27ae60;
-  }
+button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
 
-  .submit-btn:hover {
-    background-color: #2ecc71;
-  }
-  </style>
+.close-btn {
+  background-color: #c0392b;
+  margin-right: 10px;
+}
+
+.close-btn:hover {
+  background-color: #e74c3c;
+}
+
+.submit-btn {
+  background-color: #27ae60;
+}
+
+.submit-btn:hover {
+  background-color: #2ecc71;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+}
+</style>

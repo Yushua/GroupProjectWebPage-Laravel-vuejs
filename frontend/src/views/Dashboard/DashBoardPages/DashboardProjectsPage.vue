@@ -3,9 +3,9 @@
     <div class="button-container">
       <button @click="toggleCreateProjectDialog" class="nav-button">Create Project</button>
       <button @click="toggleAddRoleDialog" class="nav-button" :disabled="!selectedProjectID">Add Role</button>
-      <button @click="addTask" class="nav-button">Add Task</button>
+      <button @click="toggleAddTaskDialog" class="nav-button" :disabled="!selectedRoleID">Add Task</button>
       <button @click="setupSprint" class="nav-button">Setup Sprint</button>
-      <button @click="deleteProject" class="nav-button">Delete Project</button>
+      <button @click="deleteProject" class="nav-button" :disabled="!selectedProjectID">Delete Project</button>
     </div>
 
     <!-- Create Project Dialog -->
@@ -23,6 +23,16 @@
       @role-created="handleRoleCreated"
     />
 
+    <!-- Add Task Dialog -->
+    <AddTaskDialog
+      v-if="isAddTaskDialogOpen"
+      :projectID="selectedProjectID"
+      :roleID="selectedRoleID"
+      @close="toggleAddTaskDialog"
+      @task-created="handleTaskCreated"
+    />
+
+    <!-- All Projects -->
     <nav
       class="MessageDashboard-container"
       style="position: absolute; top: 30px; left: 270px; width: 735px; height: 400px;"
@@ -30,13 +40,18 @@
       <AllProjectsComponent @project-selected="handleProjectSelected" />
     </nav>
 
+    <!-- All Roles -->
     <nav
       class="MessageDashboard-container"
       style="position: absolute; top: 30px; left: 1050px; width: 740px; height: 400px;"
     >
-      <AllRolesComponent :projectID="selectedProjectID" />
+      <AllRolesComponent
+        :projectID="selectedProjectID"
+        @role-selected="handleRoleSelected"
+      />
     </nav>
 
+    <!-- All Messages -->
     <nav
       class="MessageDashboard-container"
       style="position: absolute; top: 470px; left: 30px; width: 1760px; height: 400px;"
@@ -52,24 +67,31 @@ import AllRolesComponent from './ProjectPageComponents/AllRolesComponent.vue'
 import AllMessagesComponent from './ProjectPageComponents/AllMessagesComponent.vue'
 import CreateProjectDialog from './ProjectPageComponents/CreateProjectDialog.vue'
 import AddRoleDialog from './ProjectPageComponents/AddRoleDialog.vue'
+import AddTaskDialog from './ProjectPageComponents/AddTaskDialog.vue'
 
 export default {
-  name: 'DashboardProjectPage',
+  name: 'DashboardProjectsPage',
   components: {
     AllProjectsComponent,
     AllRolesComponent,
     AllMessagesComponent,
     CreateProjectDialog,
-    AddRoleDialog
+    AddRoleDialog,
+    AddTaskDialog
   },
   data () {
     return {
       selectedProjectID: null,
+      selectedRoleID: null,
       isCreateProjectDialogOpen: false,
-      isAddRoleDialogOpen: false
+      isAddRoleDialogOpen: false,
+      isAddTaskDialogOpen: false
     }
   },
   methods: {
+    toggleCreateProjectDialog () {
+      this.isCreateProjectDialogOpen = !this.isCreateProjectDialogOpen
+    },
     toggleAddRoleDialog () {
       if (!this.selectedProjectID) {
         alert('Please select a project first.')
@@ -77,29 +99,47 @@ export default {
       }
       this.isAddRoleDialogOpen = !this.isAddRoleDialogOpen
     },
-    handleRoleCreated () {
-      console.log('Role created successfully.')
-      // Refresh role list if necessary
+    toggleAddTaskDialog () {
+      if (!this.selectedRoleID) {
+        alert('Please select a role first.')
+        return
+      }
+      this.isAddTaskDialogOpen = !this.isAddTaskDialogOpen
     },
     handleProjectSelected (projectID) {
       console.log('Selected ProjectID:', projectID)
       this.selectedProjectID = projectID
+      this.selectedRoleID = null // Reset role selection on project change
     },
-    toggleCreateProjectDialog () {
-      this.isCreateProjectDialogOpen = !this.isCreateProjectDialogOpen
+    handleRoleSelected (roleID) {
+      console.log('Selected RoleID:', roleID)
+      this.selectedRoleID = roleID
     },
     handleProjectCreated (newProject) {
       console.log('Project Created:', newProject)
       // Refresh project list or handle the new project as needed
     },
-    async addTask () {
-      console.log('Add Task')
+    handleRoleCreated () {
+      console.log('Role created successfully.')
+      // Refresh role list if necessary
+    },
+    handleTaskCreated () {
+      console.log('Task created successfully.')
+      // Refresh task list if necessary
     },
     async setupSprint () {
-      console.log('Setup Sprint')
+      if (!this.selectedProjectID) {
+        alert('Please select a project first.')
+        return
+      }
+      console.log('Setup Sprint for Project:', this.selectedProjectID)
     },
     async deleteProject () {
-      console.log('Delete Project')
+      if (!this.selectedProjectID) {
+        alert('Please select a project first.')
+        return
+      }
+      console.log('Delete Project:', this.selectedProjectID)
     }
   }
 }
@@ -119,8 +159,8 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
-  top: -50px !important;
-  left: -10px !important;
+  top: -50px;
+  left: -10px;
   gap: 15px;
   margin: 20px;
 }
@@ -136,7 +176,7 @@ export default {
   cursor: pointer;
   text-align: center;
   line-height: 34px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 16px;
   font-weight: 300;
 }

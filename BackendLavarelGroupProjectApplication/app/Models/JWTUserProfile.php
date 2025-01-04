@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class JWTUserProfile extends Authenticatable implements JWTSubject
 {
     use HasFactory;
 
-    protected $table = 'user_profiles'; // Specify the table name
+    protected $table = 'user_profiles';
 
     protected $fillable = [
         'username',
@@ -18,18 +19,19 @@ class JWTUserProfile extends Authenticatable implements JWTSubject
         'password',
         'LoginCode',
         'user_list',
+        'project_id',
+        'role_id',
     ];
 
     protected $hidden = [
-        'password',    // Hide password in responses
-        'LoginCode',   // Hide LoginCode in responses
+        'password',
+        'LoginCode',
     ];
 
     protected $casts = [
         'user_list' => 'array',
     ];
 
-    // JWTSubject methods
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -40,8 +42,13 @@ class JWTUserProfile extends Authenticatable implements JWTSubject
         return ['userId' => $this->userId];
     }
 
-    public function descriptionProfile()
+    public function project()
     {
-        return $this->hasOne(DescriptionProfile::class, 'userId', 'id');
+        return $this->belongsTo(Project::class, 'project_id', 'projectId');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'roleId');
     }
 }

@@ -80,34 +80,6 @@ class ProjectController extends Controller
         return response()->json($statuses);
     }
 
-    public function getUserProjects(Request $request)
-    {
-        $userId = JWTAuth::parseToken()->getClaim('userId');
-        \Log::info('User ID from token:', ['userId' => $userId]);
-
-        $projects = Project::all();
-        \Log::info('projects:', ['projects' => $projects]);
-
-        $userProjects = $projects->filter(function ($project) use ($userId) {
-            $users = $project->users; // No need for json_decode() here
-            return in_array($userId, $users, true);
-        });
-
-        \Log::info('userProjects', ['userProjects' => $userProjects]);
-
-        $result = $userProjects->map(function ($project) {
-            return [
-                'projectId' => $project->projectId,
-                'name' => $project->name,
-                'description' => $project->description,
-                'status' => $project->status,
-            ];
-        });
-
-        return response()->json($result);
-    }
-
-
     public function changeProjectStatus(Request $request, $projectId)
     {
         $validated = $request->validate([

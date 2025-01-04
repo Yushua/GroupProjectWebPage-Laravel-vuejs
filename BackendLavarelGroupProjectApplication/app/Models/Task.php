@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     protected $fillable = [
-        'TaskID',
-        'ProjectID',
-        'RoleID',
-        'UserID',
+        'taskId',
+        'projectId',
+        'roleId',
+        'userId',
         'TaskName',
         'TaskDescription',
         'TaskDate',
     ];
 
-    public $incrementing = false; // Because TaskID is a string (e.g., uniqid)
+    public $timestamps = false;
 }
