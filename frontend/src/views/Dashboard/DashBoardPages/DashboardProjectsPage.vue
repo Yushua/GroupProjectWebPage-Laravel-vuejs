@@ -38,7 +38,7 @@
       style="position: absolute; top: 470px; left: 30px; width: 1760px; height: 400px;"
     >
       <TasksByProjectComponent
-        v-if="selectedProjectID && !selectedRoleID"
+        v-if="selectedProjectID"
         :projectID="selectedProjectID"
       />
       <TasksByRoleComponent

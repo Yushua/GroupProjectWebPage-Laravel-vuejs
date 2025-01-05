@@ -37,7 +37,7 @@ export default {
       if (!this.projectID) return
       try {
         const response = await api.post(
-          '/tasksbyProject',
+          '/tasksByProject',
           { projectId: this.projectID },
           {
             headers: {

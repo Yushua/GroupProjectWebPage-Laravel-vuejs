@@ -43,7 +43,7 @@ export default {
       try {
         const response = await api.post('/tasksByRole', {
           projectId: this.projectID,
-          roleId: this.roleID
+          roleId: this.roleID.roleId
         }, {
           headers: {
             Authorization: `Bearer ${token}`

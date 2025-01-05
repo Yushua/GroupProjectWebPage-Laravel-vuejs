@@ -49,7 +49,7 @@ class RoleController extends Controller
     public function getRolesByProject(Request $request, $projectId)
     {
         \Log::info('Project ID from token:', ['$projectId' => $projectId]);
-        $project = Project::where('projectId', $projectId)->first(); // Corrected to projectId
+        $project = Project::where('projectId', $projectId)->first();
         if (!$project) {
             return response()->json(['error' => 'Project not found'], 404);
         }
@@ -66,8 +66,8 @@ class RoleController extends Controller
             return response()->json(['error' => 'User is not part of the project'], 403);
         }
 
-        \Log::info('i am here');
-        $roles = Role::where('projectId', $projectId)->get(); // Corrected to projectId
+        \Log::info('i am here in get roles by project');
+        $roles = Role::where('projectId', $projectId)->get();
         return response()->json($roles);
     }
 }
