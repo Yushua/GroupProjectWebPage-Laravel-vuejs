@@ -1,24 +1,17 @@
 <template>
   <div id="app">
-    <!-- Tasks Dashboard -->
     <nav class="TaskDashboard-container">
       <TasksDashboardContainer @task-selected="selectTask" />
     </nav>
-
-    <!-- Task Details -->
     <nav class="TaskFullDashboard-container">
       <TaskFullDashboard
         :task="selectedTask"
         @project-id-selected="selectProject"
       />
     </nav>
-
-    <!-- Project Details -->
     <nav class="ProjectDashboard-container">
       <ProjectDashboard :project="selectedProject" />
     </nav>
-
-    <!-- Message Dashboard -->
     <nav class="MessageDashboard-container">
       <MessageDashboard />
     </nav>
@@ -46,15 +39,11 @@ export default {
     }
   },
   methods: {
-    // Select a task and update selectedTask
     selectTask (task) {
-      this.selectedTask = task // Update the selected task
+      this.selectedTask = task
     },
-
-    // Select a project when the ProjectID is selected
     selectProject (projectID) {
-      // Ensure the projectID is passed as a string
-      this.selectedProject = String(projectID) // Convert projectID to string
+      this.selectedProject = String(projectID)
     }
   }
 }
@@ -77,9 +66,9 @@ export default {
   width: 630px;
   height: 400px;
   background-color: #2c3e50;
-  display: flex; /* Enables flexbox */
-  flex-direction: row; /* Makes buttons align side by side */
-  gap: 13px; /* Adds spacing between buttons */
+  display: flex;
+  flex-direction: row;
+  gap: 13px;
 }
 
 .TaskFullDashboard-container {
@@ -89,9 +78,9 @@ export default {
   width: 630px;
   height: 400px;
   background-color: #2c3e50;
-  display: flex; /* Enables flexbox */
-  flex-direction: row; /* Makes buttons align side by side */
-  gap: 15px; /* Adds spacing between buttons */
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
 }
 
 .ProjectDashboard-container {
@@ -101,9 +90,9 @@ export default {
   width: 1275px;
   height: 400px;
   background-color: #2c3e50;
-  display: flex; /* Enables flexbox */
-  flex-direction: row; /* Makes buttons align side by side */
-  gap: 13px; /* Adds spacing between buttons */
+  display: flex;
+  flex-direction: row;
+  gap: 13px;
 }
 
 .MessageDashboard-container{
@@ -113,7 +102,7 @@ export default {
   width: 470px;
   height: 815px;
   background-color: #2c3e50;
-  display: flex; /* Enables flexbox */
+  display: flex;
   flex-direction: row; /* Makes buttons align side by side */
   gap: 13px; /* Adds spacing between buttons */
 }

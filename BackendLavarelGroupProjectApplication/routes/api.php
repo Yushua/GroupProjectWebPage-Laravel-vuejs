@@ -37,7 +37,18 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('/user-descriptionYWT', [DescriptionProfileController::class, 'getUserDescriptionJWT']);
     Route::get('/user-description/{userId?}', [DescriptionProfileController::class, 'getUserDescription']);
 
-    Route::post('/project', [ProjectController::class, 'createProject']); // Create project
+    Route::post('/CreateProject', [ProjectController::class, 'createProject']);
+    Route::get('/project-statuses', [ProjectController::class, 'getProjectStatuses']);
+    Route::middleware('auth:api')->get('/projects', [ProjectController::class, 'getUserProjects']);
+
+    Route::get('/allRoles', [RoleController::class, 'getAllRoles']);
+    Route::post('/createRole', [RoleController::class, 'createRole']);
+    Route::get('/roles/{projectId}', [RoleController::class, 'getRolesByProject']);
+
+    Route::post('/createTask', [TaskController::class, 'createTask']);
+    Route::post('/tasksByProject', [TaskController::class, 'getTasksByProject']);
+    Route::post('/tasksByRole', [TaskController::class, 'getTasksByRole']);
+
     Route::post('/project/{projectId}/role', [ProjectController::class, 'addRole']); // Add role to project
     Route::post('/project/{projectId}/task', [ProjectController::class, 'addTask']); // Add task to project
     Route::get('/project/{projectId}/users', [ProjectController::class, 'getProjectUsers']); // Get project users

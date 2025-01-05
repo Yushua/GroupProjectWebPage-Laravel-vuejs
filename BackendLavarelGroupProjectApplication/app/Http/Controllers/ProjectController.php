@@ -1,28 +1,140 @@
 <?php
 
-// app/Http/Controllers/ProjectController.php
-
 namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\Task;
 use App\Models\Message;
+use App\Models\JWTUserProfile;
 use Illuminate\Http\Request;
+use App\Http\Requests\CreateProjectDTO;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ProjectController extends Controller
 {
-    // Create a new project
     public function createProject(Request $request)
     {
-        $project = Project::create([
-            'projectId' => uniqid(),  // Generate a unique Project ID
-            'name' => $request->name,
-            'invite_code' => uniqid(), // Generate a random invite code
-            'status' => 'closed',
-            'users' => json_encode([$request->user()->id]), // Add creator user initially
+        $userId = JWTAuth::parseToken()->getClaim('userId');
+
+        \Log::info('User ID from token:', ['userId' => $userId]);
+
+        $userProfile = JWTUserProfile::where('userId', $userId)->first();
+
+        if (!$userProfile) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $statuses = [
+            'InProgressPrivate',
+            'InProgressPublic',
+            'Private',
+            'Public',
+            'FinishedPrivate',
+            'FinishedPublic'
+        ];
+
+        $validated = $request->validate([
+            'ProjectName' => 'required|string|max:255',
+            'ProjectDescription' => 'required|string|max:1000',
+            'publicKey' => 'required|boolean',
+            'statusKey' => ['required', 'string', Rule::in($statuses)],
         ]);
+
+        $projectDTO = CreateProjectDTO::fromRequest($request);
+
+        $status = '';
+        if ($projectDTO->statusKey == 'Private') {
+            $status = 'InProgressPrivate';
+        } elseif ($projectDTO->statusKey == 'Public') {
+            $status = 'InProgressPublic';
+        } else {
+            return response()->json(['error' => 'Invalid statusKey provided'], 400);
+        }
+
+        $project = Project::create([
+            'projectId' => uniqid(),
+            'name' => $projectDTO->ProjectName,
+            'invite_code' => uniqid(),
+            'status' => $status,
+            'users' => json_encode([$userId]),
+            'description' => $projectDTO->ProjectDescription,
+            'owner_id' => $userId,
+            'public' => $request->input('publicKey'),
+        ]);
+
+        return response()->json($project, 201);
+    }
+
+    public function getUserProjects(Request $request)
+{
+    $userId = JWTAuth::parseToken()->getClaim('userId');
+    \Log::info('User ID from token:', ['userId' => $userId]);
+
+    // Retrieve all projects
+    $projects = Project::all();
+    \Log::info('projects:', ['projects' => $projects]);
+
+    $userProjects = $projects->filter(function ($project) use ($userId) {
+        // Get the 'users' attribute and check if it's a string or an array
+        $users = $project->users;
+
+        // If 'users' is a string (JSON encoded array), decode it into an array
+        if (is_string($users)) {
+            $users = json_decode($users, true);
+        }
+
+        // Ensure $users is an array and check if userId is in it
+        return is_array($users) && in_array($userId, $users, true);
+    });
+
+    \Log::info('userProjects', ['userProjects' => $userProjects]);
+
+    // Map the filtered projects into the desired response format
+    $result = $userProjects->map(function ($project) {
+        return [
+            'projectId' => $project->projectId,
+            'name' => $project->name,
+            'description' => $project->description,
+            'status' => $project->status,
+        ];
+    });
+
+    return response()->json($result);
+}
+
+    public function getProjectStatuses()
+    {
+        $statuses = [
+            'Private',
+            'Public',
+        ];
+
+        return response()->json($statuses);
+    }
+
+    public function changeProjectStatus(Request $request, $projectId)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:created,InProgressPublic,InProgressPrivate,Public,Private',
+        ]);
+
+        $project = Project::find($projectId);
+
+        if (!$project) {
+            return response()->json(['error' => 'Project not found'], 404);
+        }
+
+        // Check if the user is the owner
+        if ($project->owner_id !== $request->user()->id) {
+            return response()->json(['error' => 'You are not authorized to change the status of this project'], 403);
+        }
+
+        // Update the status
+        $project->status = $validated['status'];
+        $project->save();
 
         return response()->json($project);
     }
@@ -35,30 +147,24 @@ class ProjectController extends Controller
         if (!$project) {
             return response()->json(['error' => 'Project not found'], 404);
         }
-
+        if ($project->owner_id !== $request->user()->id) {
+            return response()->json(['error' => 'You are not authorized to add roles to this project'], 403);
+        }
         $role = new Role([
             'role_name' => $request->role_name,
             'role_description' => $request->role_description,
         ]);
-
         $project->roles()->save($role);
-
         return response()->json($role);
     }
 
-    // Add a task to a project
+    // Add a task to a project (any authenticated user)
     public function addTask(Request $request, $projectId)
     {
         $project = Project::find($projectId);
 
         if (!$project) {
             return response()->json(['error' => 'Project not found'], 404);
-        }
-
-        $role = Role::find($request->role_id);
-
-        if (!$role) {
-            return response()->json(['error' => 'Role not found'], 404);
         }
 
         $task = new Task([
@@ -68,9 +174,7 @@ class ProjectController extends Controller
             'end_time' => $request->end_time,
             'status' => $request->status,
         ]);
-
         $project->tasks()->save($task);
-
         return response()->json($task);
     }
 
@@ -114,8 +218,38 @@ class ProjectController extends Controller
         if (!$project) {
             return response()->json(['error' => 'Project not found'], 404);
         }
+        $user = auth()->user();
+        if ($project->owner_id === $user->id) {
+            return response()->json(['invite_code' => $project->invite_code]);
+        }
+        $statuses = [
+            'InProgressPublic',
+            'Public',
+            'FinishedPublic'
+        ];
+
+        if (!in_array($project->status, $statuses)) {
+            return response()->json(['error' => 'Project is not public'], 401);
+        }
+
+        $isUserPartOfProject = $project->users()->where('user_id', $user->id)->exists();
+        if (!$isUserPartOfProject && !$project->public) {
+            return response()->json(['error' => 'User is not part of the project and the project is not public'], 403);
+        }
 
         return response()->json(['invite_code' => $project->invite_code]);
     }
-}
 
+
+    //get all Projects
+
+    //getALl Tasks (userID)
+
+    //Get all projectTasks
+
+    //getAll MessagesProject
+
+    //getAll RolesProject
+
+    //get
+}

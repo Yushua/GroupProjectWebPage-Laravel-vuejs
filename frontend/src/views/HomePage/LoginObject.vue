@@ -114,6 +114,7 @@ export default {
         })
 
         if (response.data.token) {
+          localStorage.removeItem('token')
           localStorage.setItem('token', response.data.token)
           this.loginError = ''
           this.router.push('/dashboard') // Redirect to the dashboard
