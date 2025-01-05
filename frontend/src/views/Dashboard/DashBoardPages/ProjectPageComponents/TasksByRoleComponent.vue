@@ -1,6 +1,6 @@
 <template>
     <div class="tasks-container">
-      <h2>Tasks by Role</h2>
+      <h2 class="LogoText-text">Tasks by Role</h2>
       <div v-if="tasks.length" class="task-list">
         <div v-for="task in tasks" :key="task.taskId" class="task-item">
           <h3>{{ task.TaskName }}</h3>
@@ -63,7 +63,8 @@ export default {
 
   <style scoped>
   .tasks-container {
-    height: 100%;
+    height: 95%;
+    width: 100%;
     overflow-y: auto;
     padding: 10px;
   }
@@ -77,7 +78,20 @@ export default {
   .task-item {
     padding: 15px;
     border: 1px solid #ccc;
+    align-items: center;
+    gap: 10px;
     border-radius: 5px;
     background-color: #f9f9f9;
   }
+
+  .LogoText-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 20; /* Semi-bold */
+    font-size: 36px;
+    color: #e4e4e4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    }
   </style>

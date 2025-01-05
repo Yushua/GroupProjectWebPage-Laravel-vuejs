@@ -35,12 +35,18 @@
     <!-- all Tasks-->
     <nav
       class="MessageDashboard-container"
-      style="position: absolute; top: 470px; left: 30px; width: 1760px; height: 400px;"
+      style="position: absolute; top: 885px; left: 30px; width: 1760px; height: 400px;"
     >
       <TasksByProjectComponent
         v-if="selectedProjectID"
         :projectID="selectedProjectID"
       />
+    </nav>
+
+    <nav
+      class="MessageDashboard-container"
+      style="position: absolute; top: 470px; left: 30px; width: 1760px; height: 400px;"
+    >
       <TasksByRoleComponent
         v-if="selectedProjectID && selectedRoleID"
         :projectID="selectedProjectID"
@@ -66,19 +72,19 @@
       />
     </nav>
 
-    <nav
+    <!-- <nav
       class="MessageDashboard-container"
       style="position: absolute; top: 470px; left: 30px; width: 1760px; height: 400px;"
     >
       <AllMessagesComponent :projectID="selectedProjectID" />
-    </nav>
+    </nav> -->
   </div>
 </template>
 
 <script>
 import AllProjectsComponent from './ProjectPageComponents/AllProjectsComponent.vue'
 import AllRolesComponent from './ProjectPageComponents/AllRolesComponent.vue'
-import AllMessagesComponent from './ProjectPageComponents/AllMessagesComponent.vue'
+// import AllMessagesComponent from './ProjectPageComponents/AllMessagesComponent.vue'
 import CreateProjectDialog from './ProjectPageComponents/CreateProjectDialog.vue'
 import AddRoleDialog from './ProjectPageComponents/AddRoleDialog.vue'
 import AddTaskDialog from './ProjectPageComponents/AddTaskDialog.vue'
@@ -90,7 +96,7 @@ export default {
   components: {
     AllProjectsComponent,
     AllRolesComponent,
-    AllMessagesComponent,
+    // AllMessagesComponent,
     CreateProjectDialog,
     AddRoleDialog,
     AddTaskDialog,

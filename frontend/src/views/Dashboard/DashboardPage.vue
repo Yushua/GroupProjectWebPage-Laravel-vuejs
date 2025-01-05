@@ -53,7 +53,7 @@ export default defineComponent({
 <style scoped>
 .dashboard {
   position: relative;
-  height: 110vh;
+  height: 210vh;
   width: 100%;
 }
 
